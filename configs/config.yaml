@@ -1,0 +1,14 @@
+env: local
+
+database:
+  port: 5432
+  driver: "postgres"
+  user: user
+  password: password
+  database: db
+  host: db
+  ssl_mode: disable
+  migrations_path: ./migrations
+
+server:
+  port: 8082
