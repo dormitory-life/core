@@ -8,6 +8,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/dormitory-life/core/internal/config"
+	dbtypes "github.com/dormitory-life/core/internal/database/types"
 	"github.com/dormitory-life/utils/migrator"
 )
 
@@ -34,6 +35,8 @@ type Database struct {
 }
 
 type Repository interface {
+	GetDormitories(ctx context.Context, request *dbtypes.GetDormitoriesRequest) (*dbtypes.GetDormitoriesResponse, error)
+	GetDormitoryById(ctx context.Context, request *dbtypes.GetDormitoryByIdRequest) (*dbtypes.GetDormitoryByIdResponse, error)
 }
 
 func New(db *sql.DB) Repository {

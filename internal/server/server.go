@@ -7,6 +7,7 @@ import (
 
 	"github.com/dormitory-life/core/internal/config"
 	core "github.com/dormitory-life/core/internal/service"
+	"github.com/gorilla/mux"
 )
 
 type ServerConfig struct {
@@ -31,11 +32,12 @@ func New(cfg ServerConfig) *Server {
 	return s
 }
 
-func (s *Server) setupRouter() *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /core/ping", s.pingHandler)
-	s.server.Handler = s.loggingMiddleware(mux)
-	return mux
+func (s *Server) setupRouter() http.Handler {
+	router := mux.NewRouter()
+	router.HandleFunc("/core/ping", s.pingHandler).Methods("GET")
+	router.HandleFunc("/core/dormitories", s.getDormitoriesHandler).Methods("GET")
+	router.HandleFunc("/core/dormitories/{dormitory_id}", s.getDormitoryByIdHandler).Methods("GET")
+	return s.loggingMiddleware(router)
 }
 
 func (s *Server) Start() error {
