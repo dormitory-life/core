@@ -5,5 +5,6 @@ const (
 )
 
 const (
-	UsersTableName string = "users"
+	UsersTableName     string = "users"
+	DormitoryTableName string = "dormitory"
 )

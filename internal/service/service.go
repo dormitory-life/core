@@ -1,10 +1,12 @@
 package core
 
 import (
+	"context"
 	"errors"
 
 	"github.com/dormitory-life/core/internal/database"
 	dberrors "github.com/dormitory-life/core/internal/database/errors"
+	rmodel "github.com/dormitory-life/core/internal/server/request_models"
 )
 
 type CoreServiceConfig struct {
@@ -15,6 +17,8 @@ type CoreService struct {
 }
 
 type CoreServiceClient interface {
+	GetDormitories(ctx context.Context, request *rmodel.GetDormitoriesRequest) (*rmodel.GetDormitoriesResponse, error)
+	GetDormitoryById(ctx context.Context, request *rmodel.GetDormitoryByIdRequest) (*rmodel.GetDormitoryByIdResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {
