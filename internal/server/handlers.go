@@ -40,6 +40,8 @@ func (s *Server) handleError(w http.ResponseWriter, err error) {
 		writeErrorResponse(w, constants.ErrUnauthorized, http.StatusUnauthorized)
 	case errors.Is(err, core.ErrInternal):
 		writeErrorResponse(w, constants.ErrInternalServerError, http.StatusInternalServerError)
+	case errors.Is(err, core.ErrUnimplemented):
+		writeErrorResponse(w, constants.ErrUnimplemented, http.StatusInternalServerError)
 	default:
 		s.logger.Error("Unhandled core error", slog.String("error", err.Error()))
 		writeErrorResponse(w, constants.ErrInternalServerError, http.StatusInternalServerError)

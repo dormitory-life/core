@@ -67,7 +67,7 @@ func (c *Database) getDormitories(
 			&dormitory.Id,
 			&dormitory.Name,
 			&dormitory.Address,
-			&dormitory.Support_email,
+			&dormitory.SupportEmail,
 			&dormitory.Description,
 		); err != nil {
 			return nil, fmt.Errorf("%w: error scanning row: %v", dberrors.ErrInternal, err)
@@ -129,7 +129,7 @@ func (c *Database) getDormitoryById(
 		&dormitory.Id,
 		&dormitory.Name,
 		&dormitory.Address,
-		&dormitory.Support_email,
+		&dormitory.SupportEmail,
 		&dormitory.Description,
 	)
 	if err != nil {
@@ -143,4 +143,147 @@ func (c *Database) getDormitoryById(
 	return &dbtypes.GetDormitoryByIdResponse{
 		Dormitory: dormitory,
 	}, nil
+}
+
+func (c *Database) CreateDormitory(
+	ctx context.Context,
+	request *dbtypes.CreateDormitoryRequest,
+) (*dbtypes.CreateDormitoryResponse, error) {
+	if request == nil {
+		return nil, dberrors.ErrBadRequest
+	}
+
+	resp, err := c.createDormitory(ctx, c.db, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Database) createDormitory(
+	ctx context.Context,
+	driver Driver,
+	request *dbtypes.CreateDormitoryRequest,
+) (*dbtypes.CreateDormitoryResponse, error) {
+	if request == nil {
+		return nil, dberrors.ErrBadRequest
+	}
+
+	var (
+		psql = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+
+		dormitoryTable = fmt.Sprintf("%s.%s", constants.SchemaName, constants.DormitoryTableName)
+	)
+
+	queryBuilder := psql.Insert(dormitoryTable).
+		Columns(
+			"id", "name", "address", "support_email", "description",
+		).
+		Values(
+			request.DormitoryId,
+			request.Name,
+			request.Address,
+			request.SupportEmail,
+			request.Description,
+		).
+		Suffix("RETURNING id")
+
+	query, args, err := queryBuilder.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("%w: error building create dormitory query: %v", dberrors.ErrInternal, err)
+	}
+
+	row := driver.QueryRowContext(ctx, query, args...)
+
+	var resp dbtypes.CreateDormitoryResponse
+	err = row.Scan(
+		&resp.DormitoryId,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("%w: error scanning created dormitory: %v", dberrors.ErrInternal, err)
+	}
+
+	return &resp, nil
+}
+
+func (c *Database) UpdateDormitory(
+	ctx context.Context,
+	request *dbtypes.UpdateDormitoryRequest,
+) (*dbtypes.UpdateDormitoryResponse, error) {
+	if request == nil {
+		return nil, dberrors.ErrBadRequest
+	}
+
+	resp, err := c.updateDormitory(ctx, c.db, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Database) updateDormitory(
+	ctx context.Context,
+	driver Driver,
+	request *dbtypes.UpdateDormitoryRequest,
+) (*dbtypes.UpdateDormitoryResponse, error) {
+	if request == nil {
+		return nil, dberrors.ErrBadRequest
+	}
+
+	var (
+		psql = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+
+		dormitoryTable = fmt.Sprintf("%s.%s", constants.SchemaName, constants.DormitoryTableName)
+	)
+
+	queryBuilder := psql.Update(dormitoryTable).Where(squirrel.Eq{"id": request.DormitoryId})
+
+	setupUpdateFields(&queryBuilder, request)
+
+	queryBuilder = queryBuilder.Suffix("RETURNING id")
+
+	query, args, err := queryBuilder.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("%w: error building update dormitory query: %v", dberrors.ErrInternal, err)
+	}
+
+	row := driver.QueryRowContext(ctx, query, args...)
+
+	var resp dbtypes.UpdateDormitoryResponse
+	err = row.Scan(
+		&resp.DormitoryId,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("%w: dormitory not found", dberrors.ErrNotFound)
+		}
+		return nil, fmt.Errorf("%w: error scanning updated dormitory: %v", dberrors.ErrInternal, err)
+	}
+
+	return &resp, nil
+}
+
+func setupUpdateFields(
+	queryBuilder *squirrel.UpdateBuilder,
+	request *dbtypes.UpdateDormitoryRequest,
+) {
+	if request.Address != nil {
+		*queryBuilder = queryBuilder.Set("address", request.Address)
+	}
+
+	if request.Name != nil {
+		*queryBuilder = queryBuilder.Set("name", request.Name)
+	}
+
+	if request.SupportEmail != nil {
+		*queryBuilder = queryBuilder.Set("support_email", request.SupportEmail)
+	}
+
+	if request.Description != nil {
+		*queryBuilder = queryBuilder.Set("description", request.Description)
+	}
 }

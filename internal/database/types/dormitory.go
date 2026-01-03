@@ -1,11 +1,11 @@
 package types
 
 type Dormitory struct {
-	Id            string
-	Name          string
-	Address       string
-	Support_email string
-	Description   string
+	Id           string
+	Name         string
+	Address      string
+	SupportEmail string
+	Description  string
 }
 
 type (
@@ -22,5 +22,33 @@ type (
 
 	GetDormitoryByIdResponse struct {
 		Dormitory Dormitory
+	}
+)
+
+type (
+	CreateDormitoryRequest struct {
+		DormitoryId  string
+		Name         string
+		Address      string
+		SupportEmail string
+		Description  string
+	}
+
+	CreateDormitoryResponse struct {
+		DormitoryId string
+	}
+)
+
+type (
+	UpdateDormitoryRequest struct {
+		DormitoryId  string
+		Name         *string
+		Address      *string
+		SupportEmail *string
+		Description  *string
+	}
+
+	UpdateDormitoryResponse struct {
+		DormitoryId string
 	}
 )

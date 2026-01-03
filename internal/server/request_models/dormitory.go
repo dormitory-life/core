@@ -5,11 +5,11 @@ import (
 )
 
 type Dormitory struct {
-	Id            string `json:"id"`
-	Name          string `json:"name"`
-	Address       string `json:"address"`
-	Support_email string `json:"support_email"`
-	Description   string `json:"description"`
+	Id           string `json:"id"`
+	Name         string `json:"name"`
+	Address      string `json:"address"`
+	SupportEmail string `json:"support_email"`
+	Description  string `json:"description"`
 }
 
 type (
@@ -25,11 +25,11 @@ func (r *Dormitory) From(msg *dbtypes.Dormitory) *Dormitory {
 	}
 
 	return &Dormitory{
-		Id:            msg.Id,
-		Name:          msg.Name,
-		Address:       msg.Address,
-		Support_email: msg.Support_email,
-		Description:   msg.Description,
+		Id:           msg.Id,
+		Name:         msg.Name,
+		Address:      msg.Address,
+		SupportEmail: msg.SupportEmail,
+		Description:  msg.Description,
 	}
 }
 
@@ -67,11 +67,67 @@ func (r *GetDormitoryByIdResponse) From(msg *dbtypes.GetDormitoryByIdResponse) *
 
 	return &GetDormitoryByIdResponse{
 		Dormitory: Dormitory{
-			Id:            msg.Dormitory.Id,
-			Name:          msg.Dormitory.Name,
-			Address:       msg.Dormitory.Address,
-			Support_email: msg.Dormitory.Support_email,
-			Description:   msg.Dormitory.Description,
+			Id:           msg.Dormitory.Id,
+			Name:         msg.Dormitory.Name,
+			Address:      msg.Dormitory.Address,
+			SupportEmail: msg.Dormitory.SupportEmail,
+			Description:  msg.Dormitory.Description,
 		},
 	}
 }
+
+type (
+	CreateDormitoryRequest struct {
+		DormitoryId  string `json:"dormitory_id"`
+		Name         string `json:"name"`
+		Address      string `json:"address"`
+		SupportEmail string `json:"support_email"`
+		Description  string `json:"description"`
+	}
+
+	CreateDormitoryResponse struct {
+		DormitoryId string `json:"dormitory_id"`
+	}
+)
+
+func (r *CreateDormitoryResponse) From(msg *dbtypes.CreateDormitoryResponse) *CreateDormitoryResponse {
+	if msg == nil {
+		return nil
+	}
+
+	return &CreateDormitoryResponse{
+		DormitoryId: msg.DormitoryId,
+	}
+}
+
+type (
+	UpdateDormitoryRequest struct {
+		DormitoryId  string
+		Name         *string `json:"name"`
+		Address      *string `json:"address"`
+		SupportEmail *string `json:"support_email"`
+		Description  *string `json:"description"`
+	}
+
+	UpdateDormitoryResponse struct {
+		DormitoryId string `json:"dormitory_id"`
+	}
+)
+
+func (r *UpdateDormitoryResponse) From(msg *dbtypes.UpdateDormitoryResponse) *UpdateDormitoryResponse {
+	if msg == nil {
+		return nil
+	}
+
+	return &UpdateDormitoryResponse{
+		DormitoryId: msg.DormitoryId,
+	}
+}
+
+type (
+	DeleteDormitoryRequest struct {
+		DormitoryId string `json:"dormitory_id"`
+	}
+
+	DeleteDormitoryResponse struct{}
+)
