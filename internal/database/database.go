@@ -37,6 +37,8 @@ type Database struct {
 type Repository interface {
 	GetDormitories(ctx context.Context, request *dbtypes.GetDormitoriesRequest) (*dbtypes.GetDormitoriesResponse, error)
 	GetDormitoryById(ctx context.Context, request *dbtypes.GetDormitoryByIdRequest) (*dbtypes.GetDormitoryByIdResponse, error)
+	CreateDormitory(ctx context.Context, request *dbtypes.CreateDormitoryRequest) (*dbtypes.CreateDormitoryResponse, error)
+	UpdateDormitory(ctx context.Context, request *dbtypes.UpdateDormitoryRequest) (*dbtypes.UpdateDormitoryResponse, error)
 }
 
 func New(db *sql.DB) Repository {

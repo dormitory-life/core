@@ -19,6 +19,9 @@ type CoreService struct {
 type CoreServiceClient interface {
 	GetDormitories(ctx context.Context, request *rmodel.GetDormitoriesRequest) (*rmodel.GetDormitoriesResponse, error)
 	GetDormitoryById(ctx context.Context, request *rmodel.GetDormitoryByIdRequest) (*rmodel.GetDormitoryByIdResponse, error)
+	CreateDormitory(ctx context.Context, request *rmodel.CreateDormitoryRequest) (*rmodel.CreateDormitoryResponse, error)
+	UpdateDormitory(ctx context.Context, request *rmodel.UpdateDormitoryRequest) (*rmodel.UpdateDormitoryResponse, error)
+	DeleteDormitory(ctx context.Context, request *rmodel.DeleteDormitoryRequest) (*rmodel.DeleteDormitoryResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {

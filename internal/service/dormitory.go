@@ -45,3 +45,58 @@ func (s *CoreService) GetDormitoryById(
 
 	return res, nil
 }
+
+func (s *CoreService) CreateDormitory(
+	ctx context.Context,
+	request *rmodel.CreateDormitoryRequest,
+) (*rmodel.CreateDormitoryResponse, error) {
+	if request == nil {
+		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
+	}
+
+	resp, err := s.repository.CreateDormitory(ctx, &dbtypes.CreateDormitoryRequest{
+		DormitoryId:  request.DormitoryId,
+		Name:         request.Name,
+		Address:      request.Address,
+		SupportEmail: request.SupportEmail,
+		Description:  request.Description,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("%w: error creating dormitory: %v", s.handleDBError(err), err)
+	}
+
+	res := new(rmodel.CreateDormitoryResponse).From(resp)
+
+	return res, nil
+}
+
+func (s *CoreService) UpdateDormitory(
+	ctx context.Context,
+	request *rmodel.UpdateDormitoryRequest,
+) (*rmodel.UpdateDormitoryResponse, error) {
+	if request == nil {
+		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
+	}
+
+	resp, err := s.repository.UpdateDormitory(ctx, &dbtypes.UpdateDormitoryRequest{
+		DormitoryId:  request.DormitoryId,
+		Name:         request.Name,
+		Address:      request.Address,
+		SupportEmail: request.SupportEmail,
+		Description:  request.Description,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("%w: error updating dormitory: %v", s.handleDBError(err), err)
+	}
+
+	res := new(rmodel.UpdateDormitoryResponse).From(resp)
+
+	return res, nil
+}
+
+func (s *CoreService) DeleteDormitory(
+	ctx context.Context,
+	request *rmodel.DeleteDormitoryRequest,
+) (*rmodel.DeleteDormitoryResponse, error) {
+	return nil, ErrUnimplemented
+}
