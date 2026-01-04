@@ -9,4 +9,6 @@ var (
 	ErrNotFound            = errors.New("not found")
 	ErrUnauthorized        = errors.New("unauthorized")
 	ErrUnimplemented       = errors.New("unimplemented")
+	ErrAuthClientError     = errors.New("auth client error")
+	ErrForbidden           = errors.New("forbidden")
 )

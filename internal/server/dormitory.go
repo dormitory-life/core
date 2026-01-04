@@ -65,6 +65,11 @@ func (s *Server) getDormitoryByIdHandler(w http.ResponseWriter, r *http.Request)
 func (s *Server) createDormitoryHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "createDormitoryHandler"
 
+	userId := r.Header.Get("X-User-ID")
+	dormitoryId := r.Header.Get("X-Dormitory-ID")
+
+	s.logger.Debug("extracted from headers", slog.String("UserID", userId), slog.String("DormitoryId", dormitoryId))
+
 	var req rmodel.CreateDormitoryRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeErrorResponse(w, err, http.StatusBadRequest)

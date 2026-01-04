@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/dormitory-life/core/internal/auth"
 	"github.com/dormitory-life/core/internal/config"
 	"github.com/dormitory-life/core/internal/database"
 	"github.com/dormitory-life/core/internal/logger"
@@ -25,6 +26,7 @@ func main() {
 		panic(err)
 	}
 
+	log.Println("Core init db...")
 	db, err := database.InitDb(cfg.Db)
 	if err != nil {
 		panic(err)
@@ -32,8 +34,19 @@ func main() {
 
 	repository := database.New(db)
 
+	authClient, err := auth.New(auth.AuthClientConfig{
+		GRPCAuthServerAddress: cfg.Auth.AuthClientConfig.GRPCAuthServerAddress,
+		Timeout:               cfg.Auth.AuthClientConfig.Timeout,
+		Logger:                *logger,
+	})
+	if err != nil {
+		panic(err)
+	}
+
 	coreService := core.New(core.CoreServiceConfig{
 		Repository: repository,
+		AuthClient: authClient,
+		Logger:     *logger,
 	})
 
 	s := server.New(server.ServerConfig{
