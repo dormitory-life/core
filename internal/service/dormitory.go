@@ -54,6 +54,22 @@ func (s *CoreService) CreateDormitory(
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
 
+	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
+	}
+
+	if err := s.checkAccess(
+		ctx,
+		&rmodel.CheckAccessRequest{
+			UserId:       userId,
+			DormitoryId:  dormitoryId,
+			RoleRequired: true,
+		},
+	); err != nil {
+		return nil, err
+	}
+
 	resp, err := s.repository.CreateDormitory(ctx, &dbtypes.CreateDormitoryRequest{
 		DormitoryId:  request.DormitoryId,
 		Name:         request.Name,

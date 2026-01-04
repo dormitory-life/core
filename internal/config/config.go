@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
@@ -13,6 +14,7 @@ type Config struct {
 	Env    string         `yaml:"env"`
 	Db     DataBaseConfig `yaml:"database"`
 	Server ServerConfig   `yaml:"server"`
+	Auth   AuthConfig     `yaml:"auth"`
 }
 
 type DataBaseConfig struct {
@@ -28,6 +30,15 @@ type DataBaseConfig struct {
 
 type ServerConfig struct {
 	Port uint16 `yaml:"port"`
+}
+
+type AuthConfig struct {
+	AuthClientConfig AuthClientConfig `yaml:"client"`
+}
+
+type AuthClientConfig struct {
+	GRPCAuthServerAddress string        `yaml:"grpc_address"`
+	Timeout               time.Duration `yaml:"timeout"`
 }
 
 func ParseConfig(path string) (*Config, error) {

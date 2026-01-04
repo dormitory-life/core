@@ -41,7 +41,7 @@ func (s *Server) setupRouter() http.Handler {
 	router.HandleFunc("/core/dormitories", s.createDormitoryHandler).Methods("POST")
 	router.HandleFunc("/core/dormitories/{dormitory_id}", s.updateDormitoryHandler).Methods("PUT")
 	router.HandleFunc("/core/dormitories/{dormitory_id}", s.deleteDormitoryHandler).Methods("Delete")
-	return s.loggingMiddleware(router)
+	return s.extractIdsMiddleware(s.loggingMiddleware(router))
 }
 
 func (s *Server) Start() error {
