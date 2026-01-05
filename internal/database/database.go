@@ -39,6 +39,10 @@ type Repository interface {
 	GetDormitoryById(ctx context.Context, request *dbtypes.GetDormitoryByIdRequest) (*dbtypes.GetDormitoryByIdResponse, error)
 	CreateDormitory(ctx context.Context, request *dbtypes.CreateDormitoryRequest) (*dbtypes.CreateDormitoryResponse, error)
 	UpdateDormitory(ctx context.Context, request *dbtypes.UpdateDormitoryRequest) (*dbtypes.UpdateDormitoryResponse, error)
+
+	GetDormitoriesAvgGrades(ctx context.Context, request *dbtypes.GetDormitoriesAvgGradesRequest) (*dbtypes.GetDormitoriesAvgGradesResponse, error)
+	GetDormitoryAvgGrades(ctx context.Context, request *dbtypes.GetDormitoryAvgGradesRequest) (*dbtypes.GetDormitoryAvgGradesResponse, error)
+	CreateDormitoryGrade(ctx context.Context, request *dbtypes.CreateDormitoryGradeRequest) (*dbtypes.CreateDormitoryGradeResponse, error)
 }
 
 func New(db *sql.DB) Repository {

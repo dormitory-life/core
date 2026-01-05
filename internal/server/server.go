@@ -36,12 +36,17 @@ func (s *Server) setupRouter() http.Handler {
 	router := mux.NewRouter()
 	router.HandleFunc("/core/ping", s.pingHandler).Methods("GET")
 
+	router.HandleFunc("/core/dormitories/grades", s.getDormitoriesAvgGradesHandler).Methods("GET")
+	router.HandleFunc("/core/dormitories/{dormitory_id}/grades", s.getDormitoryAvgGradesHandler).Methods("GET")
+	router.HandleFunc("/core/dormitories/{dormitory_id}/grades", s.createDormitoryGradeHandler).Methods("POST")
+
 	router.HandleFunc("/core/dormitories", s.getDormitoriesHandler).Methods("GET")
 	router.HandleFunc("/core/dormitories/{dormitory_id}", s.getDormitoryByIdHandler).Methods("GET")
 	router.HandleFunc("/core/dormitories", s.createDormitoryHandler).Methods("POST")
 	router.HandleFunc("/core/dormitories/{dormitory_id}", s.updateDormitoryHandler).Methods("PUT")
-	router.HandleFunc("/core/dormitories/{dormitory_id}", s.deleteDormitoryHandler).Methods("Delete")
-	return s.extractIdsMiddleware(s.loggingMiddleware(router))
+	router.HandleFunc("/core/dormitories/{dormitory_id}", s.deleteDormitoryHandler).Methods("DELETE")
+
+	return s.loggingMiddleware(s.extractIdsMiddleware(router))
 }
 
 func (s *Server) Start() error {

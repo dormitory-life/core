@@ -65,11 +65,6 @@ func (s *Server) getDormitoryByIdHandler(w http.ResponseWriter, r *http.Request)
 func (s *Server) createDormitoryHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "createDormitoryHandler"
 
-	userId := r.Header.Get("X-User-ID")
-	dormitoryId := r.Header.Get("X-Dormitory-ID")
-
-	s.logger.Debug("extracted from headers", slog.String("UserID", userId), slog.String("DormitoryId", dormitoryId))
-
 	var req rmodel.CreateDormitoryRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeErrorResponse(w, err, http.StatusBadRequest)
@@ -81,13 +76,7 @@ func (s *Server) createDormitoryHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	resp, err := s.coreService.CreateDormitory(r.Context(), &rmodel.CreateDormitoryRequest{
-		DormitoryId:  req.DormitoryId,
-		Name:         req.Name,
-		Address:      req.Address,
-		SupportEmail: req.SupportEmail,
-		Description:  req.Description,
-	})
+	resp, err := s.coreService.CreateDormitory(r.Context(), &req)
 	if err != nil {
 		s.handleError(w, err)
 		s.logger.Error("error",
@@ -128,13 +117,7 @@ func (s *Server) updateDormitoryHandler(w http.ResponseWriter, r *http.Request) 
 
 	req.DormitoryId = dormitoryId
 
-	resp, err := s.coreService.UpdateDormitory(r.Context(), &rmodel.UpdateDormitoryRequest{
-		DormitoryId:  req.DormitoryId,
-		Name:         req.Name,
-		Address:      req.Address,
-		SupportEmail: req.SupportEmail,
-		Description:  req.Description,
-	})
+	resp, err := s.coreService.UpdateDormitory(r.Context(), &req)
 	if err != nil {
 		s.handleError(w, err)
 		s.logger.Error("error",
@@ -175,9 +158,7 @@ func (s *Server) deleteDormitoryHandler(w http.ResponseWriter, r *http.Request) 
 
 	req.DormitoryId = dormitoryId
 
-	resp, err := s.coreService.DeleteDormitory(r.Context(), &rmodel.DeleteDormitoryRequest{
-		DormitoryId: req.DormitoryId,
-	})
+	resp, err := s.coreService.DeleteDormitory(r.Context(), &req)
 	if err != nil {
 		s.handleError(w, err)
 		s.logger.Error("error",
