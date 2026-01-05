@@ -29,6 +29,10 @@ type CoreServiceClient interface {
 	CreateDormitory(ctx context.Context, request *rmodel.CreateDormitoryRequest) (*rmodel.CreateDormitoryResponse, error)
 	UpdateDormitory(ctx context.Context, request *rmodel.UpdateDormitoryRequest) (*rmodel.UpdateDormitoryResponse, error)
 	DeleteDormitory(ctx context.Context, request *rmodel.DeleteDormitoryRequest) (*rmodel.DeleteDormitoryResponse, error)
+
+	GetDormitoriesAvgGrades(ctx context.Context, request *rmodel.GetDormitoriesAvgGradesRequest) (*rmodel.GetDormitoriesAvgGradesResponse, error)
+	GetDormitoryAvgGrades(ctx context.Context, request *rmodel.GetDormitoryAvgGradesRequest) (*rmodel.GetDormitoryAvgGradesResponse, error)
+	CreateDormitoryGrade(ctx context.Context, request *rmodel.CreateDormitoryGradeRequest) (*rmodel.CreateDormitoryGradeResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {
