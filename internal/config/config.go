@@ -11,10 +11,11 @@ import (
 const dbConnectionStringTemplate = "%s://%s:%s@%s:%d/%s?sslmode=%s"
 
 type Config struct {
-	Env    string         `yaml:"env"`
-	Db     DataBaseConfig `yaml:"database"`
-	Server ServerConfig   `yaml:"server"`
-	Auth   AuthConfig     `yaml:"auth"`
+	Env     string         `yaml:"env"`
+	Db      DataBaseConfig `yaml:"database"`
+	Server  ServerConfig   `yaml:"server"`
+	Auth    AuthConfig     `yaml:"auth"`
+	Storage StorageConfig  `yaml:"storage"`
 }
 
 type DataBaseConfig struct {
@@ -39,6 +40,20 @@ type AuthConfig struct {
 type AuthClientConfig struct {
 	GRPCAuthServerAddress string        `yaml:"grpc_address"`
 	Timeout               time.Duration `yaml:"timeout"`
+}
+
+type StorageConfig struct {
+	Type  string       `yaml:"type"`
+	MinIO *MinIOConfig `yaml:"minio"`
+}
+
+type MinIOConfig struct {
+	Endpoint        string `yaml:"endpoint"`
+	AccessKeyId     string `yaml:"access_key_id"`
+	SecretAccessKey string `yaml:"secret_access_key"`
+	UseSSL          bool   `yaml:"use_ssl"`
+	BucketName      string `yaml:"bucket_name"`
+	PublicUrl       string `yaml:"public_url"`
 }
 
 func ParseConfig(path string) (*Config, error) {

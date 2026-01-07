@@ -10,17 +10,20 @@ import (
 	"github.com/dormitory-life/core/internal/database"
 	dberrors "github.com/dormitory-life/core/internal/database/errors"
 	rmodel "github.com/dormitory-life/core/internal/server/request_models"
+	"github.com/dormitory-life/core/internal/storage"
 )
 
 type CoreServiceConfig struct {
 	Repository database.Repository
 	AuthClient *auth.AuthClient
 	Logger     slog.Logger
+	S3Client   storage.Storage
 }
 type CoreService struct {
 	repository database.Repository
 	authClient *auth.AuthClient
 	logger     slog.Logger
+	s3Client   storage.Storage
 }
 
 type CoreServiceClient interface {
@@ -33,6 +36,9 @@ type CoreServiceClient interface {
 	GetDormitoriesAvgGrades(ctx context.Context, request *rmodel.GetDormitoriesAvgGradesRequest) (*rmodel.GetDormitoriesAvgGradesResponse, error)
 	GetDormitoryAvgGrades(ctx context.Context, request *rmodel.GetDormitoryAvgGradesRequest) (*rmodel.GetDormitoryAvgGradesResponse, error)
 	CreateDormitoryGrade(ctx context.Context, request *rmodel.CreateDormitoryGradeRequest) (*rmodel.CreateDormitoryGradeResponse, error)
+
+	CreateDormitoryPhotos(ctx context.Context, request *rmodel.CreateDormitoryPhotosRequest) (*rmodel.CreateDormitoryPhotosResponse, error)
+	DeleteDormitoryPhotos(ctx context.Context, request *rmodel.DeleteDormitoryPhotosRequest) (*rmodel.DeleteDormitoryPhotosResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {
@@ -40,6 +46,7 @@ func New(cfg CoreServiceConfig) CoreServiceClient {
 		repository: cfg.Repository,
 		authClient: cfg.AuthClient,
 		logger:     cfg.Logger,
+		s3Client:   cfg.S3Client,
 	}
 }
 
