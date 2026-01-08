@@ -62,7 +62,9 @@ func (s *CoreService) CreateDormitoryPhotos(
 		})
 		if err != nil {
 			for _, uploaded := range uploadedPhotos {
-				s.s3Client.Delete(ctx, uploaded.FilePath)
+				s.s3Client.Delete(ctx, &storage.DeleteFileRequest{
+					Path: &uploaded.FilePath,
+				})
 			}
 			return nil, fmt.Errorf("%w: upload failed: %v", ErrInternal, err)
 		}
@@ -84,7 +86,10 @@ func (s *CoreService) DeleteDormitoryPhotos(
 	ctx context.Context,
 	request *rmodel.DeleteDormitoryPhotosRequest,
 ) (*rmodel.DeleteDormitoryPhotosResponse, error) {
-	err := s.s3Client.DeleteAll(ctx, constants.CategoryDormitoryPhotos, request.DormitoryId)
+	err := s.s3Client.DeleteAll(ctx, &storage.DeleteAllRequest{
+		Category: constants.CategoryDormitoryPhotos,
+		EntityId: request.DormitoryId,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("%w: error deleting dormitory photos: %v", ErrInternal, err)
 	}

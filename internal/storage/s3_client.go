@@ -43,10 +43,10 @@ type Storage interface {
 	Upload(ctx context.Context, req *UploadRequest) (*UploadResult, error)
 
 	// Delete удаляет файл по относительному пути в S3
-	Delete(ctx context.Context, filePath string) error
+	Delete(ctx context.Context, req *DeleteFileRequest) error
 
 	// DeleteAll удаляет все файлы по пути /{category}/{entityId}/
-	DeleteAll(ctx context.Context, category constants.FileCategory, entityId string) error
+	DeleteAll(ctx context.Context, req *DeleteAllRequest) error
 
 	// GetFileUrl - вспомогательная функция по получению ссылки для пользователя на файл в S3
 	GetFileURL(filePath string) string
@@ -124,7 +124,10 @@ func (m *MinIOClient) GetEntityFiles(ctx context.Context, req *GetEntityFilesReq
 		return nil, fmt.Errorf("get entity files request is nil")
 	}
 
-	prefix := fmt.Sprintf("%s/%s/", req.Category, req.EntityId)
+	prefix, err := getPathByCategory(req.Category, req.EntityId, req.SubEntityId)
+	if err != nil {
+		return nil, err
+	}
 
 	var files []FileInfo
 
@@ -177,7 +180,7 @@ func (m *MinIOClient) Upload(
 	}
 
 	m.logger.Debug("uploading file",
-		slog.String("category", string(req.Category)),
+		slog.String("category", req.Category),
 		slog.String("entity", req.EntityId),
 		slog.String("photo_id", req.PhotoId),
 		slog.String("filename", req.FileName),
@@ -190,9 +193,14 @@ func (m *MinIOClient) Upload(
 		fileExt,
 	)
 
-	s3Path := fmt.Sprintf("%s/%s/%s", req.Category, req.EntityId, fileName)
+	s3Path, err := getPathByCategory(req.Category, req.EntityId, req.SubEntityId)
+	if err != nil {
+		return nil, err
+	}
 
-	_, err := m.client.PutObject(ctx, m.bucket, s3Path, req.Reader, req.Size, minio.PutObjectOptions{
+	s3Path = fmt.Sprintf("%s%s", s3Path, fileName)
+
+	_, err = m.client.PutObject(ctx, m.bucket, s3Path, req.Reader, req.Size, minio.PutObjectOptions{
 		ContentType: req.MimeType,
 	})
 	if err != nil {
@@ -217,13 +225,30 @@ func (m *MinIOClient) Upload(
 
 func (m *MinIOClient) Delete(
 	ctx context.Context,
-	filePath string,
+	req *DeleteFileRequest,
 ) error {
-	err := m.client.RemoveObject(ctx, m.bucket, filePath, minio.RemoveObjectOptions{})
+	if req.Path != nil {
+		err := m.client.RemoveObject(ctx, m.bucket, *req.Path, minio.RemoveObjectOptions{})
+		if err != nil {
+			m.logger.Error("failed to delete file",
+				slog.String("error", err.Error()),
+				slog.String("path", *req.Path),
+			)
+			return fmt.Errorf("failed to delete file: %w", err)
+		}
+		return nil
+	}
+
+	path, err := getPathByCategory(req.Category, req.EntityId, req.SubEntityId)
+	if err != nil {
+		return err
+	}
+
+	err = m.client.RemoveObject(ctx, m.bucket, path, minio.RemoveObjectOptions{})
 	if err != nil {
 		m.logger.Error("failed to delete file",
 			slog.String("error", err.Error()),
-			slog.String("path", filePath),
+			slog.String("path", path),
 		)
 		return fmt.Errorf("failed to delete file: %w", err)
 	}
@@ -233,10 +258,13 @@ func (m *MinIOClient) Delete(
 // DeleteAll - удаляем все файлы для сущности по префиксу
 func (m *MinIOClient) DeleteAll(
 	ctx context.Context,
-	category constants.FileCategory,
-	entityId string,
+	req *DeleteAllRequest,
 ) error {
-	prefix := fmt.Sprintf("%s/%s/", category, entityId)
+
+	prefix, err := getPathByCategory(req.Category, req.EntityId, req.SubEntityId)
+	if err != nil {
+		return err
+	}
 
 	objectsCh := m.client.ListObjects(ctx, m.bucket, minio.ListObjectsOptions{
 		Prefix:    prefix,
@@ -249,7 +277,9 @@ func (m *MinIOClient) DeleteAll(
 			continue
 		}
 
-		err := m.Delete(ctx, obj.Key)
+		err := m.Delete(ctx, &DeleteFileRequest{
+			Path:    &obj.Key,
+		})
 		if err != nil {
 			m.logger.Warn("failed to delete object",
 				slog.String("object", obj.Key),
@@ -294,6 +324,19 @@ func getFileExtension(filename string) string {
 		return ""
 	}
 	return filename[dotIndex:]
+}
+
+func getPathByCategory(category constants.FileCategory, entityId string, subEntityId string) (string, error) {
+	switch category {
+	case constants.CategoryDormitoryPhotos:
+		return fmt.Sprintf(constants.PathDormitoryPhotos, entityId), nil
+	case constants.CategoryEventPhotos:
+		return fmt.Sprintf(constants.PathFeedPhotos, entityId, subEntityId), nil
+	case constants.CategoryReviewPhotos:
+		return fmt.Sprintf(constants.PathReviewPhotos, entityId, subEntityId), nil
+	default:
+		return "", fmt.Errorf("unknown category")
+	}
 }
 
 func getFilePrefix(category constants.FileCategory) string {

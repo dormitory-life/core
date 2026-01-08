@@ -8,9 +8,10 @@ import (
 )
 
 type GetEntityFilesRequest struct {
-	Category constants.FileCategory
-	EntityId string
-	Amount   int
+	Category    constants.FileCategory
+	EntityId    string
+	SubEntityId string
+	Amount      int
 }
 
 type GetEntityFilesResponse struct {
@@ -18,13 +19,14 @@ type GetEntityFilesResponse struct {
 }
 
 type UploadRequest struct {
-	Category constants.FileCategory
-	EntityId string
-	PhotoId  string
-	FileName string
-	Reader   io.Reader
-	Size     int64
-	MimeType string
+	Category    constants.FileCategory
+	EntityId    string
+	SubEntityId string
+	PhotoId     string
+	FileName    string
+	Reader      io.Reader
+	Size        int64
+	MimeType    string
 }
 
 type UploadResult struct {
@@ -47,4 +49,18 @@ type FileInfo struct {
 	Size         int64     `json:"size"`
 	LastModified time.Time `json:"last_modified"`
 	URL          string    `json:"url"`
+}
+
+type DeleteFileRequest struct {
+	Path        *string
+	Category    constants.FileCategory
+	EntityId    string
+	SubEntityId string
+	FileName    string
+}
+
+type DeleteAllRequest struct {
+	Category    constants.FileCategory
+	EntityId    string
+	SubEntityId string
 }
