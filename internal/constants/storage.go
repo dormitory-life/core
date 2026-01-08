@@ -7,3 +7,7 @@ const (
 	CategoryEventPhotos     FileCategory = "event"
 	CategoryReviewPhotos    FileCategory = "review"
 )
+
+const (
+	GetDormitoriesDefaultAmount int = 1
+)

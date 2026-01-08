@@ -7,6 +7,16 @@ import (
 	"github.com/dormitory-life/core/internal/constants"
 )
 
+type GetEntityFilesRequest struct {
+	Category constants.FileCategory
+	EntityId string
+	Amount   int
+}
+
+type GetEntityFilesResponse struct {
+	FilesInfo []FileInfo
+}
+
 type UploadRequest struct {
 	Category constants.FileCategory
 	EntityId string

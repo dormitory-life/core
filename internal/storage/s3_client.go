@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"strings"
+	"time"
 
 	"github.com/dormitory-life/core/internal/constants"
 	"github.com/minio/minio-go/v7"
@@ -36,7 +37,7 @@ type Storage interface {
 	GetFile(ctx context.Context, filePath string) (io.ReadCloser, error)
 
 	// GetEntityFiles - получение списка файлов по путям /{category}/{entityId}/
-	GetEntityFiles(ctx context.Context, category constants.FileCategory, entityId string) ([]FileInfo, error)
+	GetEntityFiles(ctx context.Context, req *GetEntityFilesRequest) (*GetEntityFilesResponse, error)
 
 	// Upload загружает файл в папку /{category}/{entityId}/
 	Upload(ctx context.Context, req *UploadRequest) (*UploadResult, error)
@@ -118,15 +119,30 @@ func (m *MinIOClient) GetFile(ctx context.Context, filePath string) (io.ReadClos
 	return obj, nil
 }
 
-func (m *MinIOClient) GetEntityFiles(ctx context.Context, category constants.FileCategory, entityId string) ([]FileInfo, error) {
-	prefix := fmt.Sprintf("%s/%s/", category, entityId)
+func (m *MinIOClient) GetEntityFiles(ctx context.Context, req *GetEntityFilesRequest) (*GetEntityFilesResponse, error) {
+	if req == nil {
+		return nil, fmt.Errorf("get entity files request is nil")
+	}
+
+	prefix := fmt.Sprintf("%s/%s/", req.Category, req.EntityId)
 
 	var files []FileInfo
 
-	objectsCh := m.client.ListObjects(ctx, m.bucket, minio.ListObjectsOptions{
+	opts := minio.ListObjectsOptions{
 		Prefix:    prefix,
 		Recursive: true,
-	})
+	}
+
+	switch req.Amount {
+	case 0:
+		opts.MaxKeys = constants.GetDormitoriesDefaultAmount
+	default:
+		opts.MaxKeys = req.Amount
+	}
+
+	m.logger.Debug("photos amount", slog.Int("requested amount", req.Amount), slog.Int("set amount", opts.MaxKeys))
+
+	objectsCh := m.client.ListObjects(ctx, m.bucket, opts)
 
 	for obj := range objectsCh {
 		if obj.Err != nil {
@@ -139,9 +155,17 @@ func (m *MinIOClient) GetEntityFiles(ctx context.Context, category constants.Fil
 			Size: obj.Size,
 			URL:  m.GetFileURL(obj.Key),
 		})
+
+		if len(files) == req.Amount {
+			break
+		}
 	}
 
-	return files, nil
+	m.logger.Debug("Total files found", slog.Int("count", len(files)))
+
+	return &GetEntityFilesResponse{
+		FilesInfo: files,
+	}, nil
 }
 
 func (m *MinIOClient) Upload(
@@ -238,7 +262,22 @@ func (m *MinIOClient) DeleteAll(
 }
 
 func (m *MinIOClient) GetFileURL(filePath string) string {
-	return fmt.Sprintf("%s/%s", m.publicUrl, filePath)
+	url, err := m.client.PresignedGetObject(
+		context.Background(),
+		m.bucket,
+		filePath,
+		24*time.Hour,
+		nil,
+	)
+
+	if err != nil {
+		m.logger.Error("failed to generate presigned URL",
+			slog.String("key", filePath),
+			slog.String("error", err.Error()))
+		return fmt.Sprintf("%s/%s/%s", m.publicUrl, m.bucket, filePath)
+	}
+
+	return url.String()
 }
 
 func extractFileName(path string) string {

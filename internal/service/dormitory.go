@@ -3,9 +3,12 @@ package core
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
+	"github.com/dormitory-life/core/internal/constants"
 	dbtypes "github.com/dormitory-life/core/internal/database/types"
 	rmodel "github.com/dormitory-life/core/internal/server/request_models"
+	"github.com/dormitory-life/core/internal/storage"
 )
 
 func (s *CoreService) GetDormitories(
@@ -22,6 +25,21 @@ func (s *CoreService) GetDormitories(
 	}
 
 	res := new(rmodel.GetDormitoriesResponse).From(resp)
+
+	for i, dorm := range res.Dormitories {
+		photos, err := s.s3Client.GetEntityFiles(ctx, &storage.GetEntityFilesRequest{
+			Category: constants.CategoryDormitoryPhotos,
+			EntityId: dorm.Id,
+			Amount:   constants.GetDormitoriesDefaultAmount,
+		})
+		if err != nil {
+			s.logger.Warn("error getting dormitory photos", slog.String("error", err.Error()), slog.String("dormId", dorm.Id))
+		}
+
+		dormPhotos := rmodel.ConvertFileInfos(photos)
+
+		res.Dormitories[i].Photos = dormPhotos
+	}
 
 	return res, nil
 }
@@ -42,6 +60,16 @@ func (s *CoreService) GetDormitoryById(
 	}
 
 	res := new(rmodel.GetDormitoryByIdResponse).From(resp)
+
+	photos, err := s.s3Client.GetEntityFiles(ctx, &storage.GetEntityFilesRequest{
+		Category: constants.CategoryDormitoryPhotos,
+		EntityId: res.Dormitory.Id,
+	})
+	if err != nil {
+		s.logger.Warn("error getting dormitory photos", slog.String("error", err.Error()), slog.String("dormId", res.Dormitory.Id))
+	}
+
+	res.Dormitory.Photos = rmodel.ConvertFileInfos(photos)
 
 	return res, nil
 }
