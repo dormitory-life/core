@@ -1,16 +1,20 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 
 	"github.com/dormitory-life/core/internal/auth"
+	"github.com/dormitory-life/core/internal/broker"
 	"github.com/dormitory-life/core/internal/config"
 	"github.com/dormitory-life/core/internal/database"
+	"github.com/dormitory-life/core/internal/emailer"
 	"github.com/dormitory-life/core/internal/logger"
 	"github.com/dormitory-life/core/internal/server"
 	core "github.com/dormitory-life/core/internal/service"
 	"github.com/dormitory-life/core/internal/storage"
+	"github.com/dormitory-life/core/internal/support"
 )
 
 func main() {
@@ -59,11 +63,51 @@ func main() {
 		panic(err)
 	}
 
+	brokerClient := broker.New(broker.RabbitMQBrokerConfig{
+		Host:     cfg.Broker.Host,
+		Port:     cfg.Broker.Port,
+		User:     cfg.Broker.User,
+		Password: cfg.Broker.Password,
+	})
+
+	if err := brokerClient.Connect(); err != nil {
+		panic(err)
+	}
+
+	broker.ConfigureQueues(broker.QueueConfig(cfg.QueueConfig))
+
+	emailer := emailer.New(&emailer.EmailerConfig{
+		Host:     cfg.Emailer.Host,
+		Port:     cfg.Emailer.Port,
+		User:     cfg.Emailer.User,
+		Password: cfg.Emailer.Password,
+		Email:    cfg.Emailer.Email,
+		Logger:   *logger,
+	})
+
+	supportClient := support.New(&support.SupportClientConfig{
+		Broker:  brokerClient,
+		Emailer: emailer,
+		Logger:  *logger,
+	})
+
+	supportConsumer := support.NewSupportConsumer(&support.SupportConsumerConfig{
+		Broker:        brokerClient,
+		SupportClient: supportClient,
+		Logger:        *logger,
+	})
+
+	if err := supportConsumer.Start(context.Background()); err != nil {
+		panic(err)
+	}
+
 	coreService := core.New(core.CoreServiceConfig{
-		Repository: repository,
-		AuthClient: authClient,
-		Logger:     *logger,
-		S3Client:   s3Client,
+		Repository:    repository,
+		AuthClient:    authClient,
+		Logger:        *logger,
+		S3Client:      s3Client,
+		BrokerClient:  &brokerClient,
+		SupportClient: supportClient,
 	})
 
 	s := server.New(server.ServerConfig{

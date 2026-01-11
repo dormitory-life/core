@@ -11,11 +11,14 @@ import (
 const dbConnectionStringTemplate = "%s://%s:%s@%s:%d/%s?sslmode=%s"
 
 type Config struct {
-	Env     string         `yaml:"env"`
-	Db      DataBaseConfig `yaml:"database"`
-	Server  ServerConfig   `yaml:"server"`
-	Auth    AuthConfig     `yaml:"auth"`
-	Storage StorageConfig  `yaml:"storage"`
+	Env         string         `yaml:"env"`
+	Db          DataBaseConfig `yaml:"database"`
+	Server      ServerConfig   `yaml:"server"`
+	Auth        AuthConfig     `yaml:"auth"`
+	Storage     StorageConfig  `yaml:"storage"`
+	Broker      BrokerConfig   `yaml:"broker"`
+	QueueConfig QueueConfig    `yaml:"broker_queues"`
+	Emailer     EmailerConfig  `yaml:"emailer"`
 }
 
 type DataBaseConfig struct {
@@ -54,6 +57,25 @@ type MinIOConfig struct {
 	UseSSL          bool   `yaml:"use_ssl"`
 	BucketName      string `yaml:"bucket_name"`
 	PublicUrl       string `yaml:"public_url"`
+}
+
+type BrokerConfig struct {
+	Host     string `yaml:"host" env-default:"localhost"`
+	Port     int    `yaml:"port" env-default:"5672"`
+	User     string `yaml:"user" env-default:"admin"`
+	Password string `yaml:"password" env-default:"admin"`
+}
+
+type QueueConfig struct {
+	SupportQueueName string `yaml:"support_queue"`
+}
+
+type EmailerConfig struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	Email    string `yaml:"email"`
 }
 
 func ParseConfig(path string) (*Config, error) {

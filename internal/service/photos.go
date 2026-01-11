@@ -38,7 +38,6 @@ func (s *CoreService) CreateDormitoryPhotos(
 	var uploadedPhotos []rmodel.CreatePhotoResponse
 
 	for _, photoFileHeader := range request.PhotoFilesHeaders {
-
 		file, err := photoFileHeader.Open()
 		if err != nil {
 			s.logger.Warn("failed to open file",
