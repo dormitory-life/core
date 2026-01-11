@@ -27,3 +27,19 @@ storage:
     use_ssl: false
     bucket_name: "dormitory-life"
     public_url: "http://localhost:9000"
+
+broker:
+  port: 5672
+  host: "localhost"
+  user: admin
+  password: admin
+
+broker_queues:
+  support_queue: support_queue
+
+emailer:
+  host: smtp.mail.ru
+  port: 587
+  user: ""
+  password: ""
+  email: ""

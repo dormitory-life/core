@@ -7,23 +7,29 @@ import (
 	"log/slog"
 
 	"github.com/dormitory-life/core/internal/auth"
+	"github.com/dormitory-life/core/internal/broker"
 	"github.com/dormitory-life/core/internal/database"
 	dberrors "github.com/dormitory-life/core/internal/database/errors"
 	rmodel "github.com/dormitory-life/core/internal/server/request_models"
 	"github.com/dormitory-life/core/internal/storage"
+	"github.com/dormitory-life/core/internal/support"
 )
 
 type CoreServiceConfig struct {
-	Repository database.Repository
-	AuthClient *auth.AuthClient
-	Logger     slog.Logger
-	S3Client   storage.Storage
+	Repository    database.Repository
+	AuthClient    *auth.AuthClient
+	Logger        slog.Logger
+	S3Client      storage.Storage
+	BrokerClient  *broker.BrokerClient
+	SupportClient support.SupportClient
 }
 type CoreService struct {
-	repository database.Repository
-	authClient *auth.AuthClient
-	logger     slog.Logger
-	s3Client   storage.Storage
+	repository    database.Repository
+	authClient    *auth.AuthClient
+	logger        slog.Logger
+	s3Client      storage.Storage
+	brokerClient  *broker.BrokerClient
+	supportClient support.SupportClient
 }
 
 type CoreServiceClient interface {
@@ -39,14 +45,18 @@ type CoreServiceClient interface {
 
 	CreateDormitoryPhotos(ctx context.Context, request *rmodel.CreateDormitoryPhotosRequest) (*rmodel.CreateDormitoryPhotosResponse, error)
 	DeleteDormitoryPhotos(ctx context.Context, request *rmodel.DeleteDormitoryPhotosRequest) (*rmodel.DeleteDormitoryPhotosResponse, error)
+
+	CreateSupportRequest(ctx context.Context, request *rmodel.CreateSupportRequest) (*rmodel.CreateSupportResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {
 	return &CoreService{
-		repository: cfg.Repository,
-		authClient: cfg.AuthClient,
-		logger:     cfg.Logger,
-		s3Client:   cfg.S3Client,
+		repository:    cfg.Repository,
+		authClient:    cfg.AuthClient,
+		logger:        cfg.Logger,
+		s3Client:      cfg.S3Client,
+		brokerClient:  cfg.BrokerClient,
+		supportClient: cfg.SupportClient,
 	}
 }
 
