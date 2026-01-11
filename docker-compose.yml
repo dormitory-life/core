@@ -27,6 +27,8 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - ./data/minio:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -65,6 +67,8 @@ services:
       db:
         condition: service_healthy
       storage:
+        condition: service_healthy
+      broker:
         condition: service_healthy
     restart: "no"
 
