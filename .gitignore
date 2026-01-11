@@ -33,4 +33,4 @@ go.work.sum
 
 .bin
 
-configs/local.yaml
+/configs/local.yaml

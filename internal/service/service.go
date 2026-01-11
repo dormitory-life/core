@@ -47,6 +47,10 @@ type CoreServiceClient interface {
 	DeleteDormitoryPhotos(ctx context.Context, request *rmodel.DeleteDormitoryPhotosRequest) (*rmodel.DeleteDormitoryPhotosResponse, error)
 
 	CreateSupportRequest(ctx context.Context, request *rmodel.CreateSupportRequest) (*rmodel.CreateSupportResponse, error)
+
+	GetReviews(ctx context.Context, request *rmodel.GetDormitoryReviewsRequest) (*rmodel.GetDormitoryReviewsResponse, error)
+	CreateReview(ctx context.Context, request *rmodel.CreateReviewRequest) (*rmodel.CreateReviewResponse, error)
+	DeleteReview(ctx context.Context, request *rmodel.DeleteReviewRequest) (*rmodel.DeleteReviewResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {

@@ -8,6 +8,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/dormitory-life/core/internal/config"
+	"github.com/dormitory-life/core/internal/constants"
 	dbtypes "github.com/dormitory-life/core/internal/database/types"
 	"github.com/dormitory-life/utils/migrator"
 )
@@ -45,6 +46,10 @@ type Repository interface {
 	CreateDormitoryGrade(ctx context.Context, request *dbtypes.CreateDormitoryGradeRequest) (*dbtypes.CreateDormitoryGradeResponse, error)
 
 	GetEmailsForSupport(ctx context.Context, request *dbtypes.GetEmailsForSupportRequest) (*dbtypes.GetEmailsForSupportResponse, error)
+
+	GetReviews(ctx context.Context, request *dbtypes.GetDormitoryReviewsRequest) (*dbtypes.GetDormitoryReviewsResponse, error)
+	CreateReview(ctx context.Context, request *dbtypes.CreateReviewRequest) (*dbtypes.CreateReviewResponse, error)
+	DeleteReview(ctx context.Context, request *dbtypes.DeleteReviewRequest) (*dbtypes.DeleteReviewResponse, error)
 }
 
 func New(db *sql.DB) Repository {
@@ -74,4 +79,16 @@ func InitDb(cfg config.DataBaseConfig) (*sql.DB, error) {
 	log.Println("Core service is ready")
 
 	return db, nil
+}
+
+func countOffset(page, pageSize uint64) uint64 {
+	if page == 0 {
+		page = 1
+	}
+
+	if pageSize == 0 {
+		pageSize = constants.DefaultPaginationPageSize
+	}
+
+	return (page - 1) * pageSize
 }
