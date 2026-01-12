@@ -55,6 +55,10 @@ func (s *Server) setupRouter() http.Handler {
 	router.HandleFunc("/core/dormitories/{dormitory_id}/reviews", s.createReviewHandler).Methods("POST")
 	router.HandleFunc("/core/dormitories/{dormitory_id}/reviews/{review_id}", s.deleteReviewHandler).Methods("DELETE")
 
+	router.HandleFunc("/core/dormitories/{dormitory_id}/events", s.getDormitoryEventsHandler).Methods("GET")
+	router.HandleFunc("/core/dormitories/{dormitory_id}/events", s.createDormitoryEventHandler).Methods("POST")
+	router.HandleFunc("/core/dormitories/{dormitory_id}/events/{event_id}", s.deleteDormitoryEventHandler).Methods("DELETE")
+
 	return s.loggingMiddleware(s.extractIdsMiddleware(router))
 }
 

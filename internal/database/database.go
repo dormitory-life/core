@@ -50,6 +50,10 @@ type Repository interface {
 	GetReviews(ctx context.Context, request *dbtypes.GetDormitoryReviewsRequest) (*dbtypes.GetDormitoryReviewsResponse, error)
 	CreateReview(ctx context.Context, request *dbtypes.CreateReviewRequest) (*dbtypes.CreateReviewResponse, error)
 	DeleteReview(ctx context.Context, request *dbtypes.DeleteReviewRequest) (*dbtypes.DeleteReviewResponse, error)
+
+	GetDormitoryEvents(ctx context.Context, request *dbtypes.GetDormitoryEventsRequest) (*dbtypes.GetDormitoryEventsResponse, error)
+	CreateDormitoryEvent(ctx context.Context, request *dbtypes.CreateDormitoryEventRequest) (*dbtypes.CreateDormitoryEventResponse, error)
+	DeleteDormitoryEvent(ctx context.Context, request *dbtypes.DeleteDormitoryEventRequest) (*dbtypes.DeleteDormitoryEventResponse, error)
 }
 
 func New(db *sql.DB) Repository {
