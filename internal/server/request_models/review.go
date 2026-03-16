@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dormitory-life/core/internal/constants"
 	dbtypes "github.com/dormitory-life/core/internal/database/types"
 )
 
@@ -34,7 +33,7 @@ type (
 
 func (*GetDormitoryReviewsRequest) FromUrlQuery(query url.Values) (*GetDormitoryReviewsRequest, error) {
 	res := &GetDormitoryReviewsRequest{
-		Page: constants.DefaultReviewsPageSize,
+		Page: 1,
 	}
 
 	if query == nil {

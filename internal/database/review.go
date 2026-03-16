@@ -185,7 +185,7 @@ func (c *Database) deleteReview(
 
 	query, args, err := queryBuilder.ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("%w: error building create review query: %v", dberrors.ErrInternal, err)
+		return nil, fmt.Errorf("%w: error building delete review query: %v", dberrors.ErrInternal, err)
 	}
 
 	_, err = driver.ExecContext(ctx, query, args...)

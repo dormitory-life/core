@@ -51,6 +51,10 @@ type CoreServiceClient interface {
 	GetReviews(ctx context.Context, request *rmodel.GetDormitoryReviewsRequest) (*rmodel.GetDormitoryReviewsResponse, error)
 	CreateReview(ctx context.Context, request *rmodel.CreateReviewRequest) (*rmodel.CreateReviewResponse, error)
 	DeleteReview(ctx context.Context, request *rmodel.DeleteReviewRequest) (*rmodel.DeleteReviewResponse, error)
+
+	GetDormitoryEvents(ctx context.Context, request *rmodel.GetDormitoryEventsRequest) (*rmodel.GetDormitoryEventsResponse, error)
+	CreateDormitoryEvent(ctx context.Context, request *rmodel.CreateDormitoryEventRequest) (*rmodel.CreateDormitoryEventResponse, error)
+	DeleteDormitoryEvent(ctx context.Context, request *rmodel.DeleteDormitoryEventRequest) (*rmodel.DeleteDormitoryEventResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {
