@@ -8,6 +8,7 @@ import (
 	"github.com/dormitory-life/core/internal/config"
 	core "github.com/dormitory-life/core/internal/service"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type ServerConfig struct {
@@ -58,6 +59,11 @@ func (s *Server) setupRouter() http.Handler {
 	router.HandleFunc("/core/dormitories/{dormitory_id}/events", s.getDormitoryEventsHandler).Methods("GET")
 	router.HandleFunc("/core/dormitories/{dormitory_id}/events", s.createDormitoryEventHandler).Methods("POST")
 	router.HandleFunc("/core/dormitories/{dormitory_id}/events/{event_id}", s.deleteDormitoryEventHandler).Methods("DELETE")
+
+	router.HandleFunc("/core/dormitories/{dormitory_id}/chat", s.getDormitoryChatHandler).Methods("GET")
+	router.HandleFunc("/core/dormitories/{dormitory_id}/chat", s.createChatMessageHandler).Methods("POST")
+
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	return s.loggingMiddleware(s.extractIdsMiddleware(router))
 }

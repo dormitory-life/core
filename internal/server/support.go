@@ -8,6 +8,16 @@ import (
 	rmodel "github.com/dormitory-life/core/internal/server/request_models"
 )
 
+// @Summary Создание обращения в поддержку
+// @Description Создает новое обращение и отправляет сообщение на почту
+// @Tags core
+// @Accept json
+// @Produce json
+// @Param request body rmodel.CreateSupportRequest true "Данные обращения"
+// @Success 200 {object} rmodel.CreateSupportResponse "Обращение отправлено"
+// @Failure 400 {object} rmodel.ErrorResponse "Неверные данные / параметры запроса"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /core/dormitories/support [post]
 func (s *Server) createSupportRequestHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "getDormitoryByIdHandler"
 

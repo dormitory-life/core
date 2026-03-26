@@ -11,6 +11,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// @Summary Получение отзывов
+// @Description Получение отзывов общежития
+// @Tags Reviews
+// @Produce json
+// @Success 200 {object} rmodel.GetDormitoryReviewsResponse "Отзывы"
+// @Failure 400 {object} rmodel.ErrorResponse "Неверные данные / параметры запроса"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /core/dormitories/{dormitory_id}/reviews [get]
 func (s *Server) getReviewsHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "getReviewsHandler"
 
@@ -42,6 +50,9 @@ func (s *Server) getReviewsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		writeErrorResponse(w, err, http.StatusInternalServerError)
 		s.logger.Error("error encoding response",
@@ -51,6 +62,22 @@ func (s *Server) getReviewsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// @Summary Создать отзыв
+// @Description Создание отзыва на общежитие
+// @Tags Reviews
+// @Accept multipart/form-data
+// @Produce json
+// @Param dormitory_id path string true "ID общежития"
+// @Param title formData string true "Заголовок отзыва"
+// @Param description formData string true "Описание отзыва"
+// @Param photos formData []file true "Фотографии отзыва" collectionFormat(multi)
+// @Success 201 {object} rmodel.CreateReviewResponse "Отзыв создано"
+// @Failure 400 {object} rmodel.ErrorResponse "Некорректные данные формы или отсутствуют обязательные поля"
+// @Failure 401 {object} rmodel.ErrorResponse "Пользователь не авторизован"
+// @Failure 403 {object} rmodel.ErrorResponse "Нет прав на действие"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Security BearerAuth
+// @Router /core/dormitories/{dormitory_id}/reviews [post]
 func (s *Server) createReviewHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "createReviewHandler"
 
@@ -70,6 +97,9 @@ func (s *Server) createReviewHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		writeErrorResponse(w, err, http.StatusInternalServerError)
 		s.logger.Error("error encoding response",
@@ -79,6 +109,17 @@ func (s *Server) createReviewHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// @Summary Удалить отзыв
+// @Description Удаляет отзыв на общежитие
+// @Tags Reviews
+// @Param dormitory_id path string true "ID общежития"
+// @Success 204
+// @Failure 400 {object} rmodel.ErrorResponse "Неверные данные / параметры запроса"
+// @Failure 401 {object} rmodel.ErrorResponse "Пользователь не авторизован"
+// @Failure 403 {object} rmodel.ErrorResponse "Нет прав на действие"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Security BearerAuth
+// @Router /core/dormitories/{dormitory_id}/reviews/{event_id} [delete]
 func (s *Server) deleteReviewHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "deleteReviewHandler"
 
@@ -92,6 +133,8 @@ func (s *Server) deleteReviewHandler(w http.ResponseWriter, r *http.Request) {
 		DormitoryId: dormitoryId,
 		ReviewId:    reviewId,
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 
 	_, err := s.coreService.DeleteReview(r.Context(), req)
 	if err != nil {

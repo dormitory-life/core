@@ -72,5 +72,12 @@ func (s *SupportSvc) ProcessSupportMessage(
 
 	s.logger.Debug("sent support mail", slog.String("from student", resp.UserEmail), slog.String("to support", resp.SupportEmail))
 
+	if err := supportJob.job.Ack(false); err != nil {
+		s.logger.Error("error ack message", slog.String("from student", resp.UserEmail), slog.String("to support", resp.SupportEmail))
+		return fmt.Errorf("%w: error ack message: %v", ErrInternal, err)
+	}
+
+	s.logger.Debug("ack support message", slog.String("from student", resp.UserEmail), slog.String("to support", resp.SupportEmail))
+
 	return nil
 }

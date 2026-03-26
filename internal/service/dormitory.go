@@ -121,6 +121,22 @@ func (s *CoreService) UpdateDormitory(
 	if request == nil {
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
+	
+	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
+	}
+
+	if err := s.checkAccess(
+		ctx,
+		&rmodel.CheckAccessRequest{
+			UserId:       userId,
+			DormitoryId:  dormitoryId,
+			RoleRequired: true,
+		},
+	); err != nil {
+		return nil, err
+	}
 
 	resp, err := s.repository.UpdateDormitory(ctx, &dbtypes.UpdateDormitoryRequest{
 		DormitoryId:  request.DormitoryId,

@@ -15,7 +15,15 @@ import (
 	core "github.com/dormitory-life/core/internal/service"
 	"github.com/dormitory-life/core/internal/storage"
 	"github.com/dormitory-life/core/internal/support"
+
+	_ "github.com/dormitory-life/core/docs"
 )
+
+// @title Dormitory Life Core API
+// @version 1.0
+// @description API Core сервиса Dormitory Life
+// @BasePath /
+// @schemes http https
 
 func main() {
 	configPath := os.Args[1]

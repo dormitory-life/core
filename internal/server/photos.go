@@ -10,6 +10,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// @Summary Создать фото общежития
+// @Description Создает новое фото для общежития
+// @Tags Dormitories
+// @Accept multipart/form-data
+// @Produce json
+// @Param dormitory_id path string true "ID общежития"
+// @Param photos formData []file true "Фотографии общежития" collectionFormat(multi)
+// @Success 201 {object} rmodel.CreateDormitoryEventResponse "Событие создано"
+// @Failure 400 {object} rmodel.ErrorResponse "Некорректные данные формы или отсутствуют обязательные поля"
+// @Failure 401 {object} rmodel.ErrorResponse "Пользователь не авторизован"
+// @Failure 403 {object} rmodel.ErrorResponse "Нет прав на действие"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Security BearerAuth
+// @Router /core/dormitories/{dormitory_id}/photos [post]
 func (s *Server) createDormitoryPhotosHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "createDormitoryPhotosHandler"
 
@@ -51,6 +65,9 @@ func (s *Server) createDormitoryPhotosHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
+
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		writeErrorResponse(w, err, http.StatusInternalServerError)
 		s.logger.Error("error encoding response",
@@ -60,6 +77,17 @@ func (s *Server) createDormitoryPhotosHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
+// @Summary Удалить фотографии общежития
+// @Description Удаляет фотографии общежития
+// @Tags Dormitories
+// @Param dormitory_id path string true "ID общежития"
+// @Success 200 {object} rmodel.DeleteDormitoryPhotosResponse "Фото удалены"
+// @Failure 400 {object} rmodel.ErrorResponse "Неверные данные / параметры запроса"
+// @Failure 401 {object} rmodel.ErrorResponse "Пользователь не авторизован"
+// @Failure 403 {object} rmodel.ErrorResponse "Нет прав на действие"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Security BearerAuth
+// @Router /core/dormitories/{dormitory_id}/photos [delete]
 func (s *Server) deleteDormitoryPhotosHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "deleteDormitoryPhotosHandler"
 
@@ -82,6 +110,9 @@ func (s *Server) deleteDormitoryPhotosHandler(w http.ResponseWriter, r *http.Req
 
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		writeErrorResponse(w, err, http.StatusInternalServerError)

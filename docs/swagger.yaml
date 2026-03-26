@@ -1,0 +1,869 @@
+basePath: /
+definitions:
+  github_com_dormitory-life_core_internal_server_request_models.AvgGrade:
+    properties:
+      avg_administration_quality:
+        type: number
+      avg_bathroom_cleanliness:
+        type: number
+      avg_cleaning_frequency:
+        type: number
+      avg_common_areas_equipment:
+        type: number
+      avg_corridor_cleanliness:
+        type: number
+      avg_corridor_spaciousness:
+        type: number
+      avg_equipment_maintenance:
+        type: number
+      avg_kitchen_cleanliness:
+        type: number
+      avg_kitchen_spaciousness:
+        type: number
+      avg_noise_isolation:
+        type: number
+      avg_residents_culture_level:
+        type: number
+      avg_room_spaciousness:
+        type: number
+      avg_shower_location_convenience:
+        type: number
+      avg_transport_accessibility:
+        type: number
+      avg_window_condition:
+        type: number
+      created_at:
+        type: string
+      dormitory_id:
+        type: string
+      id:
+        type: string
+      overall_average:
+        type: number
+      period_date:
+        type: string
+      total_ratings:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.ChatMessage:
+    properties:
+      created_at:
+        type: string
+      dormitory_id:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+      user_id:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreateChatMessageResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreateDormitoryEventResponse:
+    properties:
+      description:
+        type: string
+      dormitory_id:
+        type: string
+      event_id:
+        type: string
+      photos:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreatePhotoResponse'
+        type: array
+      title:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreateDormitoryGradeResponse:
+    properties:
+      grade_id:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreateDormitoryResponse:
+    properties:
+      dormitory_id:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreatePhotoResponse:
+    properties:
+      fileName:
+        type: string
+      filePath:
+        type: string
+      size:
+        format: int64
+        type: integer
+      url:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreateReviewResponse:
+    properties:
+      description:
+        type: string
+      dormitory_id:
+        type: string
+      owner_id:
+        type: string
+      photos:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreatePhotoResponse'
+        type: array
+      review_id:
+        type: string
+      title:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreateSupportRequest:
+    properties:
+      description:
+        type: string
+      dormitoryId:
+        type: string
+      title:
+        type: string
+      userId:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.CreateSupportResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.DeleteDormitoryPhotosResponse:
+    properties:
+      dormitoryId:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.DeleteDormitoryResponse:
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.Dormitory:
+    properties:
+      address:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      photo_links:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.FileInfo'
+        type: array
+      support_email:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.ErrorResponse:
+    properties:
+      details:
+        items:
+          type: string
+        type: array
+      error:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.Event:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      dormitory_id:
+        type: string
+      event_id:
+        type: string
+      event_photos:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.FileInfo'
+        type: array
+      title:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.FileInfo:
+    properties:
+      last_modified:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      size:
+        type: integer
+      url:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.GetChatMessagesResponse:
+    properties:
+      messages:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ChatMessage'
+        type: array
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.GetDormitoriesAvgGradesResponse:
+    properties:
+      avg_grades:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.AvgGrade'
+        type: array
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.GetDormitoriesResponse:
+    properties:
+      dormitories:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.Dormitory'
+        type: array
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.GetDormitoryAvgGradesResponse:
+    properties:
+      avg_grades:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.AvgGrade'
+        type: array
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.GetDormitoryByIdResponse:
+    properties:
+      dormitory:
+        $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.Dormitory'
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.GetDormitoryEventsResponse:
+    properties:
+      events:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.Event'
+        type: array
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.GetDormitoryReviewsResponse:
+    properties:
+      reviews:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.Review'
+        type: array
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.Review:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      dormitory_id:
+        type: string
+      owner_id:
+        type: string
+      review_id:
+        type: string
+      review_photos:
+        items:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.FileInfo'
+        type: array
+      title:
+        type: string
+    type: object
+  github_com_dormitory-life_core_internal_server_request_models.UpdateDormitoryResponse:
+    properties:
+      dormitory_id:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API Core сервиса Dormitory Life
+  title: Dormitory Life Core API
+  version: "1.0"
+paths:
+  /core/dormitories:
+    get:
+      description: Получение списка краткой информации о всех общежитиях
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Общежития
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.GetDormitoriesResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Получение списка общежитий
+      tags:
+      - Dormitories
+    post:
+      consumes:
+      - application/json
+      description: Создает общежитие в системе
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Общежитие создано
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateDormitoryResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Создание общежития
+      tags:
+      - Dormitories
+  /core/dormitories/{dormitory_id}:
+    delete:
+      description: Удаляет общежитие из системы
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Общежитие удалено
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.DeleteDormitoryResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Удаление общежития
+      tags:
+      - Dormitories
+    get:
+      description: Получение подробной информации об общежитии
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Общежитие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.GetDormitoryByIdResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Получение общежития
+      tags:
+      - Dormitories
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию об общежитии
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Общежитие обновлено
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.UpdateDormitoryResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Обновление информации об общежитии
+      tags:
+      - Dormitories
+  /core/dormitories/{dormitory_id}/chat:
+    get:
+      description: Получение сообщений чата общежития
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Оценки
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.GetChatMessagesResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Получение чата
+      tags:
+      - Chat
+    post:
+      consumes:
+      - application/json
+      description: Создание сообщения в чате общежития
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Сообщение создано
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateChatMessageResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Создание cообщения
+      tags:
+      - Chat
+  /core/dormitories/{dormitory_id}/events:
+    get:
+      description: Получение списка событий общежития
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Лента
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.GetDormitoryEventsResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Получение ленты
+      tags:
+      - Feed
+    post:
+      consumes:
+      - multipart/form-data
+      description: Создает новое событие для общежития с заголовком, описанием и фотографиями
+      parameters:
+      - description: ID общежития
+        in: path
+        name: dormitory_id
+        required: true
+        type: string
+      - description: Заголовок события
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Описание события
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Фотографии события
+        in: formData
+        name: photos
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Событие создано
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateDormitoryEventResponse'
+        "400":
+          description: Некорректные данные формы или отсутствуют обязательные поля
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать событие общежития
+      tags:
+      - Feed
+  /core/dormitories/{dormitory_id}/events/{event_id}:
+    delete:
+      description: Удаляет событие из ленты общежития
+      parameters:
+      - description: ID общежития
+        in: path
+        name: dormitory_id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удалить событие общежития
+      tags:
+      - Feed
+  /core/dormitories/{dormitory_id}/grades:
+    get:
+      description: Получение средних оценок общежития
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Оценки
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.GetDormitoryAvgGradesResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Получение средних оценок общежития
+      tags:
+      - Grades
+    post:
+      consumes:
+      - application/json
+      description: Создание оценки общежития по критериям
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Оценка создана
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateDormitoryGradeResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на оценивание
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "409":
+          description: Уже оценивали в этом месяце
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Создание оценки общежития
+      tags:
+      - Grades
+  /core/dormitories/{dormitory_id}/photos:
+    delete:
+      description: Удаляет фотографии общежития
+      parameters:
+      - description: ID общежития
+        in: path
+        name: dormitory_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Фото удалены
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.DeleteDormitoryPhotosResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удалить фотографии общежития
+      tags:
+      - Dormitories
+    post:
+      consumes:
+      - multipart/form-data
+      description: Создает новое фото для общежития
+      parameters:
+      - description: ID общежития
+        in: path
+        name: dormitory_id
+        required: true
+        type: string
+      - collectionFormat: multi
+        description: Фотографии общежития
+        in: formData
+        items:
+          type: file
+        name: photos
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Событие создано
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateDormitoryEventResponse'
+        "400":
+          description: Некорректные данные формы или отсутствуют обязательные поля
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать фото общежития
+      tags:
+      - Dormitories
+  /core/dormitories/{dormitory_id}/reviews:
+    get:
+      description: Получение отзывов общежития
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Отзывы
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.GetDormitoryReviewsResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Получение отзывов
+      tags:
+      - Reviews
+    post:
+      consumes:
+      - multipart/form-data
+      description: Создание отзыва на общежитие
+      parameters:
+      - description: ID общежития
+        in: path
+        name: dormitory_id
+        required: true
+        type: string
+      - description: Заголовок отзыва
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Описание отзыва
+        in: formData
+        name: description
+        required: true
+        type: string
+      - collectionFormat: multi
+        description: Фотографии отзыва
+        in: formData
+        items:
+          type: file
+        name: photos
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Отзыв создано
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateReviewResponse'
+        "400":
+          description: Некорректные данные формы или отсутствуют обязательные поля
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать отзыв
+      tags:
+      - Reviews
+  /core/dormitories/{dormitory_id}/reviews/{event_id}:
+    delete:
+      description: Удаляет отзыв на общежитие
+      parameters:
+      - description: ID общежития
+        in: path
+        name: dormitory_id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "401":
+          description: Пользователь не авторизован
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "403":
+          description: Нет прав на действие
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удалить отзыв
+      tags:
+      - Reviews
+  /core/dormitories/grades:
+    get:
+      description: Получение средних оценок общежитий
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Оценки
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.GetDormitoriesAvgGradesResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Получение средних оценок общежитий
+      tags:
+      - Grades
+  /core/dormitories/support:
+    post:
+      consumes:
+      - application/json
+      description: Создает новое обращение и отправляет сообщение на почту
+      parameters:
+      - description: Данные обращения
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateSupportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Обращение отправлено
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.CreateSupportResponse'
+        "400":
+          description: Неверные данные / параметры запроса
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_dormitory-life_core_internal_server_request_models.ErrorResponse'
+      summary: Создание обращения в поддержку
+      tags:
+      - core
+  /core/ping:
+    get:
+      description: Возвращает pong, если сервис авторизации работает
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Проверка доступности core-сервиса
+      tags:
+      - core
+schemes:
+- http
+- https
+swagger: "2.0"

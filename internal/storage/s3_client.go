@@ -278,7 +278,7 @@ func (m *MinIOClient) DeleteAll(
 		}
 
 		err := m.Delete(ctx, &DeleteFileRequest{
-			Path:    &obj.Key,
+			Path: &obj.Key,
 		})
 		if err != nil {
 			m.logger.Warn("failed to delete object",
