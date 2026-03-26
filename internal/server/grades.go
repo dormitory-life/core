@@ -9,6 +9,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// @Summary Получение средних оценок общежитий
+// @Description Получение средних оценок общежитий
+// @Tags Grades
+// @Produce json
+// @Success 200 {object} rmodel.GetDormitoriesAvgGradesResponse "Оценки"
+// @Failure 400 {object} rmodel.ErrorResponse "Неверные данные / параметры запроса"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /core/dormitories/grades [get]
 func (s *Server) getDormitoriesAvgGradesHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "getDormitoriesAvgGradesHandler"
 
@@ -23,6 +31,9 @@ func (s *Server) getDormitoriesAvgGradesHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		writeErrorResponse(w, err, http.StatusInternalServerError)
 		s.logger.Error("error encoding response",
@@ -32,6 +43,15 @@ func (s *Server) getDormitoriesAvgGradesHandler(w http.ResponseWriter, r *http.R
 	}
 }
 
+// @Summary Получение средних оценок общежития
+// @Description Получение средних оценок общежития
+// @Tags Grades
+// @Produce json
+// @Params dormitory_id path string true "ID общежития"
+// @Success 200 {object} rmodel.GetDormitoryAvgGradesResponse "Оценки"
+// @Failure 400 {object} rmodel.ErrorResponse "Неверные данные / параметры запроса"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /core/dormitories/{dormitory_id}/grades [get]
 func (s *Server) getDormitoryAvgGradesHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "getDormitoryAvgGradesHandler"
 
@@ -53,6 +73,9 @@ func (s *Server) getDormitoryAvgGradesHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		writeErrorResponse(w, err, http.StatusInternalServerError)
 		s.logger.Error("error encoding response",
@@ -62,6 +85,19 @@ func (s *Server) getDormitoryAvgGradesHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
+// @Summary Создание оценки общежития
+// @Description Создание оценки общежития по критериям
+// @Tags Grades
+// @Accept json
+// @Produce json
+// @Params dormitory_id path string true "ID общежития"
+// @Params request body true rmodel.CreateDormitoryGradeRequest "Оценки по критериям"
+// @Success 200 {object} rmodel.CreateDormitoryGradeResponse "Оценка создана"
+// @Failure 400 {object} rmodel.ErrorResponse "Неверные данные / параметры запроса"
+// @Failure 403 {object} rmodel.ErrorResponse "Нет прав на оценивание"
+// @Failure 409 {object} rmodel.ErrorResponse "Уже оценивали в этом месяце"
+// @Failure 500 {object} rmodel.ErrorResponse "Внутренняя ошибка сервера"
+// @Router /core/dormitories/{dormitory_id}/grades [post]
 func (s *Server) createDormitoryGradeHandler(w http.ResponseWriter, r *http.Request) {
 	const handlerName = "createDormitoryGradeHandler"
 
@@ -93,6 +129,9 @@ func (s *Server) createDormitoryGradeHandler(w http.ResponseWriter, r *http.Requ
 
 		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		writeErrorResponse(w, err, http.StatusInternalServerError)

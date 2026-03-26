@@ -11,6 +11,7 @@ const (
 	DormitoryAvgGradesTableName string = "dormitory_average_grades"
 	ReviewTableName             string = "reviews"
 	FeedTableName               string = "feed"
+	ChatTableName               string = "chat_messages"
 )
 
 const (

@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  core-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: "postgres://user:password@db:5432/db?sslmode=disable"
+      MIGRATIONS_PATH: "/app/migrations"
+    ports:
+      - 8082:8082
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    #   storage:
+    #     condition: service_healthy
+    #   broker:
+    #     condition: service_healthy
+    extra_hosts:
+      - "minio.localtest.me:host-gateway"
+    restart: "no"
+    networks:
+      - core-db
+      - auth-core
+      - core-gateway
+      - core-broker
+      - core-s3
+
+networks:
+  core-db:
+    external: true
+  core-broker:
+    external: true
+  core-s3:
+    external: true
+  auth-core:
+    external: true
+  core-gateway:
+    external: true

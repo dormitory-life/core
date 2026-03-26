@@ -55,6 +55,9 @@ type CoreServiceClient interface {
 	GetDormitoryEvents(ctx context.Context, request *rmodel.GetDormitoryEventsRequest) (*rmodel.GetDormitoryEventsResponse, error)
 	CreateDormitoryEvent(ctx context.Context, request *rmodel.CreateDormitoryEventRequest) (*rmodel.CreateDormitoryEventResponse, error)
 	DeleteDormitoryEvent(ctx context.Context, request *rmodel.DeleteDormitoryEventRequest) (*rmodel.DeleteDormitoryEventResponse, error)
+
+	GetChat(ctx context.Context, request *rmodel.GetChatMessagesRequest) (*rmodel.GetChatMessagesResponse, error)
+	CreateChatMessage(ctx context.Context, request *rmodel.CreateChatMessageRequest) (*rmodel.CreateChatMessageResponse, error)
 }
 
 func New(cfg CoreServiceConfig) CoreServiceClient {

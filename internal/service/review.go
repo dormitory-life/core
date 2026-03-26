@@ -166,10 +166,9 @@ func (s *CoreService) DeleteReview(
 		return nil, err
 	}
 
-	_, err = s.repository.DeleteReview(ctx, &dbtypes.DeleteReviewRequest{
+	if _, err := s.repository.DeleteReview(ctx, &dbtypes.DeleteReviewRequest{
 		ReviewId: request.ReviewId,
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, fmt.Errorf("%w: error deleting review: %v", s.handleDBError(err), err)
 	}
 

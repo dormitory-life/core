@@ -54,6 +54,9 @@ type Repository interface {
 	GetDormitoryEvents(ctx context.Context, request *dbtypes.GetDormitoryEventsRequest) (*dbtypes.GetDormitoryEventsResponse, error)
 	CreateDormitoryEvent(ctx context.Context, request *dbtypes.CreateDormitoryEventRequest) (*dbtypes.CreateDormitoryEventResponse, error)
 	DeleteDormitoryEvent(ctx context.Context, request *dbtypes.DeleteDormitoryEventRequest) (*dbtypes.DeleteDormitoryEventResponse, error)
+
+	GetChatMessages(ctx context.Context, request *dbtypes.GetChatMessagesRequest) (*dbtypes.GetChatMessagesResponse, error)
+	CreateChatMessage(ctx context.Context, request *dbtypes.CreateChatMessageRequest) (*dbtypes.CreateChatMessageResponse, error)
 }
 
 func New(db *sql.DB) Repository {

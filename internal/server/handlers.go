@@ -12,6 +12,12 @@ import (
 	"github.com/dormitory-life/core/internal/constants"
 )
 
+// @Summary Проверка доступности core-сервиса
+// @Description Возвращает pong, если сервис авторизации работает
+// @Tags core
+// @Produce json
+// @Success 200 {string} string "pong"
+// @Router /core/ping [get]
 func (s *Server) pingHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("pong"))
 }
