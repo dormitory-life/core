@@ -40,6 +40,6 @@ broker_queues:
 emailer:
   host: smtp.mail.ru
   port: 587
-  user: vladlim2003@mail.ru
-  password: eaarK9LFd5KCzrFe0ALb
-  email: vladlim2003@mail.ru
+  user: ""
+  password: ""
+  email: ""
