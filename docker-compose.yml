@@ -54,6 +54,19 @@ services:
       timeout: 10s
       retries: 5
 
+  cache:
+    image: redis:7.0.11-alpine
+    container_name: cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--requirepass", "admin"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "admin", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   core-service:
     build:
       context: .
@@ -69,6 +82,8 @@ services:
       storage:
         condition: service_healthy
       broker:
+        condition: service_healthy
+      cache:
         condition: service_healthy
     restart: "no"
 

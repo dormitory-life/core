@@ -43,3 +43,10 @@ emailer:
   user: ""
   password: ""
   email: ""
+
+cache:
+  addr: "cache:6379"
+  password: admin
+  max_retries: 3
+  timeout: 5s
+  dial_timeout: 5s

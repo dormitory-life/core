@@ -26,6 +26,7 @@ services:
       - core-gateway
       - core-broker
       - core-s3
+      - core-cache
 
 networks:
   core-db:
@@ -33,6 +34,8 @@ networks:
   core-broker:
     external: true
   core-s3:
+    external: true
+  core-cache:
     external: true
   auth-core:
     external: true

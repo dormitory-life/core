@@ -8,6 +8,7 @@ import (
 
 	"github.com/dormitory-life/core/internal/auth"
 	"github.com/dormitory-life/core/internal/broker"
+	"github.com/dormitory-life/core/internal/cache"
 	"github.com/dormitory-life/core/internal/database"
 	dberrors "github.com/dormitory-life/core/internal/database/errors"
 	rmodel "github.com/dormitory-life/core/internal/server/request_models"
@@ -22,6 +23,7 @@ type CoreServiceConfig struct {
 	S3Client      storage.Storage
 	BrokerClient  *broker.BrokerClient
 	SupportClient support.SupportClient
+	CacheClient   cache.CacheClient
 }
 type CoreService struct {
 	repository    database.Repository
@@ -30,6 +32,7 @@ type CoreService struct {
 	s3Client      storage.Storage
 	brokerClient  *broker.BrokerClient
 	supportClient support.SupportClient
+	cacheClient   cache.CacheClient
 }
 
 type CoreServiceClient interface {
@@ -68,6 +71,7 @@ func New(cfg CoreServiceConfig) CoreServiceClient {
 		s3Client:      cfg.S3Client,
 		brokerClient:  cfg.BrokerClient,
 		supportClient: cfg.SupportClient,
+		cacheClient:   cfg.CacheClient,
 	}
 }
 
