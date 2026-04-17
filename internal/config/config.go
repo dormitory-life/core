@@ -19,6 +19,7 @@ type Config struct {
 	Broker      BrokerConfig   `yaml:"broker"`
 	QueueConfig QueueConfig    `yaml:"broker_queues"`
 	Emailer     EmailerConfig  `yaml:"emailer"`
+	Cache       CacheConfig    `yaml:"cache"`
 }
 
 type DataBaseConfig struct {
@@ -76,6 +77,14 @@ type EmailerConfig struct {
 	User     string `yaml:"user"`
 	Password string `yaml:"password"`
 	Email    string `yaml:"email"`
+}
+
+type CacheConfig struct {
+	Addr        string        `yaml:"addr"`
+	Password    string        `yaml:"password"`
+	MaxRetries  int           `yaml:"max_retries"`
+	DialTimeout time.Duration `yaml:"dial_timeout"`
+	Timeout     time.Duration `yaml:"timeout"`
 }
 
 func ParseConfig(path string) (*Config, error) {

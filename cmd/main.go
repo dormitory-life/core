@@ -7,6 +7,7 @@ import (
 
 	"github.com/dormitory-life/core/internal/auth"
 	"github.com/dormitory-life/core/internal/broker"
+	"github.com/dormitory-life/core/internal/cache"
 	"github.com/dormitory-life/core/internal/config"
 	"github.com/dormitory-life/core/internal/database"
 	"github.com/dormitory-life/core/internal/emailer"
@@ -109,6 +110,17 @@ func main() {
 		panic(err)
 	}
 
+	cacheClient, err := cache.NewCacheClient(&cache.Config{
+		Addr:        cfg.Cache.Addr,
+		Password:    cfg.Cache.Password,
+		MaxRetries:  cfg.Cache.MaxRetries,
+		DialTimeout: cfg.Cache.DialTimeout,
+		Timeout:     cfg.Cache.Timeout,
+	})
+	if err != nil {
+		panic(err)
+	}
+
 	coreService := core.New(core.CoreServiceConfig{
 		Repository:    repository,
 		AuthClient:    authClient,
@@ -116,6 +128,7 @@ func main() {
 		S3Client:      s3Client,
 		BrokerClient:  &brokerClient,
 		SupportClient: supportClient,
+		CacheClient:   cacheClient,
 	})
 
 	s := server.New(server.ServerConfig{
