@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
@@ -194,4 +195,71 @@ func (c *Database) deleteReview(
 	}
 
 	return &dbtypes.DeleteReviewResponse{}, nil
+}
+
+func (c *Database) GetReviewById(
+	ctx context.Context,
+	request *dbtypes.GetReviewByIdRequest,
+) (*dbtypes.GetReviewByIdResponse, error) {
+	if request == nil {
+		return nil, dberrors.ErrBadRequest
+	}
+
+	resp, err := c.getReviewById(ctx, c.db, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Database) getReviewById(
+	ctx context.Context,
+	driver Driver,
+	request *dbtypes.GetReviewByIdRequest,
+) (*dbtypes.GetReviewByIdResponse, error) {
+	if request == nil {
+		return nil, dberrors.ErrBadRequest
+	}
+
+	var (
+		psql = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+
+		reviewTable = fmt.Sprintf("%s.%s", constants.SchemaName, constants.ReviewTableName)
+	)
+
+	queryBuilder := psql.
+		Select(
+			"id", "owner_id", "dormitory_id", "title", "description", "created_at",
+		).
+		From(reviewTable).
+		Where(squirrel.Eq{"id": request.ReviewId}).
+		Limit(1)
+
+	query, args, err := queryBuilder.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("%w: error building get review by id query: %v", dberrors.ErrInternal, err)
+	}
+
+	var review dbtypes.Review
+
+	err = driver.QueryRowContext(ctx, query, args...).Scan(
+		&review.ReviewId,
+		&review.OwnerId,
+		&review.DormitoryId,
+		&review.Title,
+		&review.Description,
+		&review.CreatedAt,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("%w: review not found", dberrors.ErrNotFound)
+		}
+
+		return nil, fmt.Errorf("%w: error executing get review by id query: %v", dberrors.ErrInternal, err)
+	}
+
+	return &dbtypes.GetReviewByIdResponse{
+		Review: review,
+	}, nil
 }

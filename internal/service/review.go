@@ -63,6 +63,17 @@ func (s *CoreService) CreateReview(
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
 	}
 
+	roleResp, err := s.repository.GetUsersRole(ctx, &dbtypes.GetUsersRoleRequest{
+		UserId: userId,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("%w: error getting user role: %v", s.handleDBError(err), err)
+	}
+
+	if roleResp.Role != dbtypes.UserStudentRole {
+		return nil, fmt.Errorf("%w: user role is not student", ErrForbidden)
+	}
+
 	if err := s.checkAccess(
 		ctx,
 		&rmodel.CheckAccessRequest{
@@ -153,6 +164,18 @@ func (s *CoreService) DeleteReview(
 	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
+	}
+
+	// only owner can delete review
+	reviewInfo, err := s.repository.GetReviewById(ctx, &dbtypes.GetReviewByIdRequest{
+		ReviewId: request.ReviewId,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("%w: error getting review: %v", s.handleDBError(err), err)
+	}
+
+	if userId != reviewInfo.Review.OwnerId {
+		return nil, fmt.Errorf("%w: user is not owner of review", ErrForbidden)
 	}
 
 	if err := s.checkAccess(

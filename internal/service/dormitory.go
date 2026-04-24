@@ -129,6 +129,8 @@ func (s *CoreService) CreateDormitory(
 
 	res := new(rmodel.CreateDormitoryResponse).From(resp)
 
+	go s.invalidateDormitoryListCache(ctx)
+
 	return res, nil
 }
 
@@ -169,7 +171,8 @@ func (s *CoreService) UpdateDormitory(
 
 	res := new(rmodel.UpdateDormitoryResponse).From(resp)
 
-	s.invalidateDormitoryCache(ctx, request.DormitoryId)
+	go s.invalidateDormitoryCache(ctx, request.DormitoryId)
+	go s.invalidateDormitoryListCache(ctx)
 
 	return res, nil
 }
@@ -306,14 +309,36 @@ func (s *CoreService) invalidateDormitoryCache(
 	ctx context.Context,
 	dormitoryID string,
 ) error {
+	ctxBg, cancel := context.WithTimeout(context.Background(), constants.DefaultCtxDuration)
+
+	defer cancel()
+
 	s.logger.Debug("invalidating dormitory cache", slog.String("dormitoryId", dormitoryID))
 
 	if err := s.cacheClient.Delete(
-		ctx,
+		ctxBg,
 		dormitoryID,
 		cache.CategoryDormitory); err != nil {
 		s.logger.Warn("error invalidating dormitory cache", slog.String("error", err.Error()))
 		return fmt.Errorf("%w: error invalidating dormitory cache: %v", ErrInternal, err)
+	}
+
+	return nil
+}
+
+func (s *CoreService) invalidateDormitoryListCache(ctx context.Context) error {
+	ctxBg, cancel := context.WithTimeout(context.Background(), constants.DefaultCtxDuration)
+
+	defer cancel()
+
+	s.logger.Debug("invalidating dormitory list cache")
+
+	if err := s.cacheClient.Delete(
+		ctxBg,
+		constants.CacheDormitoriesKey,
+		cache.CategoryDormitoryList); err != nil {
+		s.logger.Warn("error invalidating dormitory list cache", slog.String("error", err.Error()))
+		return fmt.Errorf("%w: error invalidating dormitory list cache: %v", ErrInternal, err)
 	}
 
 	return nil

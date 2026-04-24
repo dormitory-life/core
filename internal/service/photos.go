@@ -76,7 +76,8 @@ func (s *CoreService) CreateDormitoryPhotos(
 		})
 	}
 
-	s.invalidateDormitoryCache(ctx, dormitoryId)
+	go s.invalidateDormitoryCache(ctx, dormitoryId)
+	go s.invalidateDormitoryListCache(ctx)
 
 	return &rmodel.CreateDormitoryPhotosResponse{
 		CreatePhotoResponses: uploadedPhotos,
@@ -111,7 +112,8 @@ func (s *CoreService) DeleteDormitoryPhotos(
 		return nil, fmt.Errorf("%w: error deleting dormitory photos: %v", ErrInternal, err)
 	}
 
-	s.invalidateDormitoryCache(ctx, dormitoryId)
+	go s.invalidateDormitoryCache(ctx, dormitoryId)
+	go s.invalidateDormitoryListCache(ctx)
 
 	return &rmodel.DeleteDormitoryPhotosResponse{
 		DormitoryId: request.DormitoryId,

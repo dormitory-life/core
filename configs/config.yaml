@@ -40,9 +40,9 @@ broker_queues:
 emailer:
   host: smtp.mail.ru
   port: 587
-  user: ""
-  password: ""
-  email: ""
+  user: 
+  password: 
+  email: 
 
 cache:
   addr: "cache:6379"
