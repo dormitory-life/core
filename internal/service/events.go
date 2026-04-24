@@ -57,7 +57,7 @@ func (s *CoreService) CreateDormitoryEvent(
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
 
-	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
+	userId, _, err := s.extractIdsFromRequestContext(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
 	}
@@ -74,7 +74,7 @@ func (s *CoreService) CreateDormitoryEvent(
 	}
 
 	createResp, err := s.repository.CreateDormitoryEvent(ctx, &dbtypes.CreateDormitoryEventRequest{
-		DormitoryId: dormitoryId,
+		DormitoryId: request.DormitoryId,
 		Title:       request.Title,
 		Description: request.Description,
 	})
@@ -99,7 +99,7 @@ func (s *CoreService) CreateDormitoryEvent(
 
 		uploadResult, err := s.s3Client.Upload(ctx, &storage.UploadRequest{
 			Category:    constants.CategoryEventPhotos,
-			EntityId:    dormitoryId,
+			EntityId:    request.DormitoryId,
 			SubEntityId: createResp.EventId,
 			PhotoId:     fileId,
 			FileName:    photoFileHeader.Filename,
@@ -132,7 +132,7 @@ func (s *CoreService) CreateDormitoryEvent(
 
 	return &rmodel.CreateDormitoryEventResponse{
 		EventId:              createResp.EventId,
-		DormitoryId:          dormitoryId,
+		DormitoryId:          request.DormitoryId,
 		CreatePhotoResponses: uploadedPhotos,
 		Title:                request.Title,
 		Description:          request.Description,
@@ -147,7 +147,7 @@ func (s *CoreService) DeleteDormitoryEvent(
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
 
-	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
+	userId, _, err := s.extractIdsFromRequestContext(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
 	}
@@ -172,7 +172,7 @@ func (s *CoreService) DeleteDormitoryEvent(
 
 	if err := s.s3Client.DeleteAll(ctx, &storage.DeleteAllRequest{
 		Category:    constants.CategoryEventPhotos,
-		EntityId:    dormitoryId,
+		EntityId:    request.DormitoryId,
 		SubEntityId: request.EventId,
 	}); err != nil {
 		return nil, fmt.Errorf("%w: error deleting event photos: %v", ErrInternal, err)

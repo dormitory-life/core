@@ -43,3 +43,13 @@ type (
 	DeleteReviewResponse struct {
 	}
 )
+
+type (
+	GetReviewByIdRequest struct {
+		ReviewId string
+	}
+
+	GetReviewByIdResponse struct {
+		Review Review
+	}
+)

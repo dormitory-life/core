@@ -59,6 +59,18 @@ func (s *CoreService) CreateDormitoryGrade(
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
 	}
 
+	// only students can evaluate dormitory
+	roleResp, err := s.repository.GetUsersRole(ctx, &dbtypes.GetUsersRoleRequest{
+		UserId: userId,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("%w: error getting user role: %v", s.handleDBError(err), err)
+	}
+
+	if roleResp.Role != dbtypes.UserStudentRole {
+		return nil, fmt.Errorf("%w: user role is not student", ErrForbidden)
+	}
+
 	if err := s.checkAccess(
 		ctx,
 		&rmodel.CheckAccessRequest{

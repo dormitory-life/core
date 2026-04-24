@@ -57,6 +57,9 @@ type Repository interface {
 
 	GetChatMessages(ctx context.Context, request *dbtypes.GetChatMessagesRequest) (*dbtypes.GetChatMessagesResponse, error)
 	CreateChatMessage(ctx context.Context, request *dbtypes.CreateChatMessageRequest) (*dbtypes.CreateChatMessageResponse, error)
+
+	GetUsersRole(ctx context.Context, request *dbtypes.GetUsersRoleRequest) (*dbtypes.GetUsersRoleResponse, error)
+	GetReviewById(ctx context.Context, request *dbtypes.GetReviewByIdRequest) (*dbtypes.GetReviewByIdResponse, error)
 }
 
 func New(db *sql.DB) Repository {
