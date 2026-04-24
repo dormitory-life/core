@@ -25,7 +25,7 @@ func (s *CoreService) GetChat(
 		ctx,
 		&rmodel.CheckAccessRequest{
 			UserId:       userId,
-			DormitoryId:  dormitoryId,
+			DormitoryId:  dormitoryId, // TODO: replace with request.DormitoryID or delete
 			RoleRequired: false,
 		},
 	); err != nil {
@@ -53,7 +53,7 @@ func (s *CoreService) CreateChatMessage(
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
 
-	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
+	userId, _, err := s.extractIdsFromRequestContext(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
 	}
@@ -62,7 +62,7 @@ func (s *CoreService) CreateChatMessage(
 		ctx,
 		&rmodel.CheckAccessRequest{
 			UserId:       userId,
-			DormitoryId:  dormitoryId,
+			DormitoryId:  request.DormitoryID,
 			RoleRequired: false,
 		},
 	); err != nil {

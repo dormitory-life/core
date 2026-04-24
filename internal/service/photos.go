@@ -97,7 +97,7 @@ func (s *CoreService) DeleteDormitoryPhotos(
 		ctx,
 		&rmodel.CheckAccessRequest{
 			UserId:       userId,
-			DormitoryId:  dormitoryId,
+			DormitoryId:  request.DormitoryId,
 			RoleRequired: true,
 		},
 	); err != nil {

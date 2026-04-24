@@ -100,7 +100,7 @@ func (s *CoreService) CreateDormitory(
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
 
-	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
+	userId, _, err := s.extractIdsFromRequestContext(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
 	}
@@ -109,7 +109,7 @@ func (s *CoreService) CreateDormitory(
 		ctx,
 		&rmodel.CheckAccessRequest{
 			UserId:       userId,
-			DormitoryId:  dormitoryId,
+			DormitoryId:  request.DormitoryId,
 			RoleRequired: true,
 		},
 	); err != nil {
@@ -140,7 +140,7 @@ func (s *CoreService) UpdateDormitory(
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
 
-	userId, dormitoryId, err := s.extractIdsFromRequestContext(ctx)
+	userId, _, err := s.extractIdsFromRequestContext(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error getting ids from context: %v", ErrInternal, err)
 	}
@@ -149,7 +149,7 @@ func (s *CoreService) UpdateDormitory(
 		ctx,
 		&rmodel.CheckAccessRequest{
 			UserId:       userId,
-			DormitoryId:  dormitoryId,
+			DormitoryId:  request.DormitoryId,
 			RoleRequired: true,
 		},
 	); err != nil {
