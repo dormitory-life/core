@@ -3,8 +3,11 @@ package emailer
 import (
 	"context"
 	"fmt"
+	"html"
 	"log/slog"
+	"mime"
 	"net/smtp"
+	"strings"
 )
 
 type EmailerConfig struct {
@@ -41,20 +44,28 @@ func (e *Emailer) SendMessage(
 	req *SendMessageRequest,
 ) (*SendMessageResponse, error) {
 	slog.Info("sending mail", slog.Any("mail", req))
+
 	if req == nil {
 		return nil, fmt.Errorf("%w: request is nil", ErrBadRequest)
 	}
 
 	auth := smtp.PlainAuth("", e.user, e.password, e.host)
 
-	mail := fmt.Sprintf(email_template, req.UserEmail, req.Title, req.Description)
+	body := fmt.Sprintf(
+		emailTemplate,
+		html.EscapeString(req.UserEmail),
+		html.EscapeString(req.Title),
+		html.EscapeString(req.Description),
+	)
+
+	message := buildHTMLMessage(e.email, req.SupportEmail, supportHeader, body)
 
 	if err := smtp.SendMail(
 		fmt.Sprintf("%s:%d", e.host, e.port),
 		auth,
 		e.email,
 		[]string{req.SupportEmail},
-		[]byte(mail),
+		[]byte(message),
 	); err != nil {
 		e.logger.Error("error sending mail", slog.String("error", err.Error()))
 		return nil, fmt.Errorf("%w: error sending email: %v", ErrInternal, err)
@@ -64,4 +75,19 @@ func (e *Emailer) SendMessage(
 		UserEmail:    req.UserEmail,
 		SupportEmail: req.SupportEmail,
 	}, nil
+}
+
+func buildHTMLMessage(from, to, subject, body string) string {
+	encodedSubject := mime.QEncoding.Encode("utf-8", subject)
+
+	headers := []string{
+		fmt.Sprintf("From: Dormitory Life Support <%s>", from),
+		fmt.Sprintf("To: %s", to),
+		fmt.Sprintf("Subject: %s", encodedSubject),
+		"MIME-Version: 1.0",
+		`Content-Type: text/html; charset="UTF-8"`,
+		"Content-Transfer-Encoding: 8bit",
+	}
+
+	return strings.Join(headers, "\r\n") + "\r\n\r\n" + body
 }
